@@ -1,0 +1,426 @@
+********************
+  Widget Reference
+********************
+
+HTML elements controlled by HTRAF are called *HTRAF widgets*.  HTRAF
+recognizes widgets by presence of attribute ``data-htsql``.
+
+The type of the widget is determined by attribute ``data-widget``;
+if it is not set, the type is derived from the element tag.
+Conveniently, commonly used widget types are called ``select``,
+``table``, ``ul``, ``ol``, so often there is no need to specify the
+widget type explicitly.
+
+When the widget type is not recognized, the default type called
+*singleValue* is used.
+
+.. ifconfig:: build_website
+
+    .. demo::
+       :source:
+
+        <script type="text/javascript"
+            src="/htraf/htraf.js"
+            data-htsql-version="2"
+            data-htsql-prefix="/@demo">
+        </script>
+
+.. ifconfig:: not build_website
+
+    .. demo::
+       :source:
+
+        <script type="text/javascript"
+            src="../htraf/htraf.js"
+            data-htsql-version="2"
+            data-htsql-prefix="http://demo.htsql.org">
+        </script>
+
+
+Table Widget
+============
+
+Probably the most common widget in HTRAF, *table* renders data using
+HTML ``<table>`` element.
+
+Table rows are selectable; when selected, the widget emits the value
+from the first column.
+
+Example
+-------
+
+.. demo::
+   :source:
+
+    <table data-htsql="/school">
+    </table>
+
+Attributes
+----------
+
+`data-hide-column-0` (``true``)
+    Do not display the first output column.
+
+    Useful when the first column contains a value of the key that is
+    passed to dependent widgets, but should not be displayed in the
+    output.
+
+    .. demo::
+       :source:
+
+        <h3>Select a School</h3>
+        <table id="school_with_hidden_code"
+            data-htsql="/school{code, name}?exists(department)"
+            data-hide-column-0="true">
+        </table>
+
+        <h3>Associated Departments</h3>
+        <table
+            data-htsql="/department{name}
+                                   ?school.code=$school_with_hidden_code"
+            data-ref="school_with_hidden_code">
+        </table>
+
+    In this example, clicking on a row of the first widget passes the
+    code of the selected school to the second widget.
+
+CSS Classes
+-----------
+
+`rN` (*N* is integer starting from *0*)
+    Set on *N*-th row (``<tr>``) element of the widget.
+
+`cN` (*N* is integer starting from *0*)
+    Set on each *N*-th column (``<td>``) element of the widget.
+
+`even`, `odd`
+    Set on each even/odd row element.
+
+
+Select Widget
+=============
+
+The *select* widget presents data in the form of a drop-down menu using
+a ``<select>`` element.
+
+The HTSQL query associated with the widget should produce one or two
+columns.  When the output has two columns, they are used as the value
+and the label of each option respectively.  When the output has only one
+column, this column is used to populate both the option value and the
+option label.
+
+Example
+-------
+
+.. demo::
+   :source:
+
+    <select data-htsql="/school{code}">
+    </select>
+
+    <select data-htsql="/school{code, name}">
+    </select>
+
+Attributes
+----------
+
+`multiple`
+    The select widget admits multiple selections.  When more then one
+    choice is selected, the values are passed to the dependent widgets
+    using ``{...}`` list.
+
+    .. demo::
+       :source:
+
+        <select id="multiple_schools" size="4" multiple
+            data-htsql="/school{code, name}?exists(department)">
+        </select>
+
+        <table
+            data-htsql="/department{name}
+                                   ?school.code=$multiple_schools"
+            data-ref="multiple_schools">
+        </table>
+
+    In this example, you may select multiple rows in the school list;
+    the table below will show all associated departments.
+
+
+UL and OL Widgets
+=================
+
+The *ul* and *ol* widgets present data in a form of an unordered and
+ordered lists using ``<ul>`` and ``<ol>`` HTML elements.
+
+Just like the select widget, the ul and ol widgets accept input data
+with one or two columns.  When the input data contains two columns, the
+first column indicates the value emitted when an entry is selected and
+the second row specifies the entry content.
+
+Example
+-------
+
+.. demo::
+   :source:
+
+    <ul data-htsql="/school{code}?exists(department)">
+    </ul>
+
+    <ol data-htsql="/school{code, name}?exists(department)">
+    </ol>
+
+
+IFrame Widget
+=============
+
+The *iframe* widget embeds the response from the HTSQL service in a
+frame embedded in the page.  This widget displays the output as it is
+formatted by HTSQL.
+
+Example
+-------
+
+.. demo::
+   :source:
+
+    <iframe width="600" height="300"
+        data-htsql="/school{code, name}?exists(department)">
+    </iframe>
+
+
+Chart Widget
+============
+
+The *chart* widget presents data in a graphical form.  The first column
+of the output specifies the chart labels, the remaining columns specify
+the respective values.
+
+Since HTML does not have a ``<chart>`` element, you need to use a
+``<div>`` element and specify the widget type using ``data-widget``
+attribute.
+
+Example
+-------
+
+.. demo::
+   :source:
+
+    <div style="width: 700px; height: 350px"
+        data-widget="chart"
+        data-yint="true"
+        data-title="Number of Departments by School"
+        data-htsql="/school{code,
+                            num_dept := count(department)}
+                           ?num_dept>0">
+    </div>
+
+Chart Types
+-----------
+
+The widget provides several types of charts: bar chart, pie chart and
+line chart.  The chart type is specified using attribute ``data-type``:
+
+`bar` (*bar chart*)
+    To display a bar chart, the input data should contain two or more
+    columns: the first column contains the labels, the subsequent
+    columns are numeric values.  Each value is represented by the height
+    of a rectangular bar.
+
+`stacked` (*stacked bar chart*)
+    Same as the regular bar chart except that when the data contain two
+    or more value columns, the respective bars are stacked in a single
+    line.
+
+`pie` (*pie chart*)
+    For a pie chart, the input data should contain two columns: the
+    labels and respective numeric values.
+
+`line` (*line chart*)
+    To generate a line chart, the input data should contain two or more
+    columns: the first column contains (numeric or date) values for the
+    *X* axis, the rest contain numeric values for the *Y* axis.
+
+.. demo::
+   :source:
+
+    <div style="width: 345px; height: 325px; float: left"
+        data-widget="chart"
+        data-type="bar"
+        data-yint="true"
+        data-title="Bar Chart"
+        data-htsql="/school{code,
+                            num_dept := count(department),
+                            num_prog := count(program)}
+                           ?num_dept>2&num_prog>2">
+    </div>
+
+    <div style="width: 345px; height: 325px; float: left"
+        data-widget="chart"
+        data-type="stack"
+        data-yint="true"
+        data-title="Stacked Bar Chart"
+        data-htsql="/school{code,
+                            num_dept := count(department),
+                            num_prog := count(program)}
+                           ?num_dept>2&num_prog>2">
+    </div>
+
+
+    <div style="width: 345px; height: 325px; float: left; clear: both"
+        data-widget="chart"
+        data-type="pie"
+        data-yint="true"
+        data-title="Pie Chart"
+        data-htsql="/school{code,
+                            num_dept := count(department)}
+                           ?num_dept>2">
+    </div>
+
+    <div style="width: 345px; height: 325px; float: left"
+        data-widget="chart"
+        data-type="line"
+        data-yint="true"
+        data-title="Line Chart"
+        data-htsql="/(school^{num_dept := count(department)})
+                            {num_dept,
+                             num_school := count(school),
+                             num_prog := count(school.program)}">
+    </div>
+
+    <div style="clear: both"></div>
+
+Attributes
+----------
+
+`style`
+    Use CSS properties ``width`` and ``height`` to specify the size of
+    the chart.
+
+`data-type` (``bar`` (default), ``stack``, ``pie``, ``line``)
+    Indicates the chart type: *bar chart*, *stacked bar chart*, *pie
+    chart* or *line chart*.  Each chart type has specific requirements
+    for the input data.
+
+`data-legend` (``ne`` (default), ``se``, ``nw``, ``sw``, ``no``)
+    Position of the chart legend; ``no`` means no legend displayed.
+
+`data-title` (a string)
+    The chart title.
+
+`data-show-title` (``true`` (default) or ``false``)
+    Set to ``false`` to hide the chart title.
+
+`data-yint` (``true`` or ``false`` (default))
+    Set to force integer axis ticks.
+
+`data-x-vertical` (``true`` or ``false`` (default))
+    Set to swap *X* and *Y* axes.
+
+
+The Default Widget
+==================
+
+The default widget (called *singleValue*) is a fallback used when the
+actual widget type cannot be determined.  The widget replaces the
+content of the element with the value from the first row and the first
+column of the data source.
+
+Example
+-------
+
+.. demo::
+   :source:
+
+    <p>The database contains
+    <strong data-htsql="/count(school)"></strong>
+    records in the <em>school</em> table and
+    <strong data-htsql="/count(department)"></strong>
+    records in the <em>department</em> table.</p>
+
+
+Common Attributes
+=================
+
+In this section, we describe attributes that could be defined on any
+HTRAF widget:
+
+`id` (a unique identifier)
+    Indicates the name of the widget; must be unique across the whole
+    HTML page.  The name is used for declaring widget dependencies and
+    passing values between widgets.
+
+`data-htsql` (an HTSQL query)
+    HTSQL query executed to populate the widget.  This is a mandatory
+    attribute.
+
+`data-widget` (widget type: ``select``, ``table``, ``chart``, etc)
+    The type of the widget; when not present, HTRAF assumes it coincides
+    with the tag name.
+
+`data-ref` (space-separated list of parent widgets)
+    If set, indicates that the widget depends on selections on the given
+    parent widgets.  The selected values are passed to the HTSQL query
+    as references.
+
+`data-onchange` (Javascript)
+    Code to execute when the widget value changes.
+
+`data-onerror` (Javascript)
+    Code to execute when an HTSQL request produced an error.
+
+`data-empty` (Javascript)
+    Code to execute when an HTSQL request returned no rows.
+
+`data-onbeforeload` (Javascript)
+    Code to execute before making an HTSQL request.
+
+`data-onafterload` (Javascript)
+    Code to execute after the widget is rendered.
+
+In Javascript code, ``this`` refers to the DOM element of the widget.
+
+
+Adding New Widgets
+==================
+
+HTRAF provides an API for defining new widget types.  The API is based
+on `JQuery UI`_ framework; see JQuery UI documentation for details.
+
+.. _JQuery UI: http://jqueryui.com/
+
+In the following example, we create a widget called *DL* that uses HTML
+``<dl>`` element to create a definition list.  The widget requires data
+source with two columns: the first column populates the term and the
+second column populates the description of the term.
+
+.. demo::
+   :source:
+
+    <script type="text/javascript">
+        $.widget("htraf.dl", $.htraf.Base, {
+            render: function() {
+                var rows = this.data.data;
+                var element = this.element;
+                $.each(rows, function(i, row) {
+                    $("<dt/>").text(row[0]).appendTo(element);
+                    $("<dd/>").text(row[1]).appendTo(element);
+                });
+            }
+        });
+    </script>
+
+Here we create a new widget type ``htraf.dl`` using standard JQuery UI
+function ``$.widget()``.  The class ``$.htraf.Base`` is the base class
+for all HTRAF widgets; most subclasses need only to redefine method
+``render()`` which is called when the widget receives data from the data
+source and needs to render itself on the page.  In this method,
+``this.data`` refers to the output from the HTSQL request,
+``this.element`` is the widget element.
+
+Now, let's see how it works:
+
+.. demo::
+   :source:
+
+    <dl data-htsql="/school{code, name}?exists(department)"></dl>
+

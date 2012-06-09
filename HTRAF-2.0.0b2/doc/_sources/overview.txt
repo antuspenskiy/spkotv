@@ -1,0 +1,306 @@
+******************
+  HTRAF Overview
+******************
+
+Introduction
+============
+
+Extracting and presenting data from a relational database is one of
+the most common tasks in web development.  The usual approach splits
+this task into several *tiers*:
+
+* a database tier that stores the data;
+* a middleware tier is a server side application that retrieves data
+  from the database and renders it into HTML;
+* a presentation tier is a web browser that displays the rendered
+  page to the users.
+
+While powerful and generic, this approach is quite heavyweight.  HTSQL
+and HTRAF radically simplify it by eliminating the middleware tier;
+instead you embed the data from the database directly to an HTML page.
+
+Take the following use case: allow a user to select a *school* from
+a drop-down list, then, for the selected school, display associated
+*departments* together with the *number of courses* offered by each
+department.
+
+.. note::
+
+   In all examples below, we use a sample database used for HTSQL
+   regression testing.  The database contains schools, programs
+   administered by a school, departments associated with a school, and
+   courses offered by a department.
+
+This is how to implement this use case with HTRAF:
+
+.. demo::
+   :source:
+
+    <select id="school_code"
+        data-htsql="/school{code, name}
+                           ?exists(department)">
+    </select>
+
+    <table
+        data-htsql="/department{name, count(course)}
+                               ?school.code=$school_code"
+        data-ref="school_code">
+    </table>
+
+This HTML fragment contains two elements: ``<select>`` and ``<table>``
+which display a drop-down list of schools and a list of associated
+departments respectively.  The elements (we call them *widgets*) are
+empty, but have some extra attributes.
+
+The ``data-htsql`` attribute contains an HTSQL query; it instructs
+HTRAF to execute the query and use the result to populate the content
+of the widget.  Take a look at the output of the query:
+
+.. htsql:: /school{code, name}?exists(department)
+   :cut: 4
+
+HTRAF renders this output into the following HTML code:
+
+.. sourcecode:: html
+
+    <select id="school_code">
+        <option value="art">School of Art and Design</option>
+        <option value="bus">School of Business</option>
+        <option value="edu">College of Education</option>
+        <option value="eng">School of Engineering</option>
+        ...
+    </select>
+
+The ``<select>`` widget is also assigned an anchor ``school_code``,
+which allows us to refer to it from other widgets.
+
+The ``<table>`` widget is more interesting as it must refresh each time
+the user selects a school from the drop-down list.  To indicate this
+dependency, we add ``data-ref="school_code"`` attribute.  Now the widget
+will be updated any time the ``school_code`` element signals a change.
+The value of the selected row is available in the HTSQL query under the
+name ``$school_code``.
+
+For example, if the user selects *School of Engineering* in the
+drop-down list, then to update the linked table, HTRAF will execute the
+query:
+
+.. htsql::
+   :cut: 4
+
+    /department{name, count(course)}?school.code=$school_code
+     :where ($school_code := 'eng')
+
+For more information on HTSQL, see http://htsql.org/; this document
+describes how to use HTRAF toolkit to embed results of HTSQL queries
+into HTML pages.
+
+
+Prerequisites
+=============
+
+Installing HTSQL
+----------------
+
+HTRAF uses an HTSQL service to retrieve data from a relational database;
+therefore, in order to use HTRAF, you need to install HTSQL and deploy
+it as a web service against your database.  See `HTSQL Installation
+Guide`_ for more details.
+
+.. _HTSQL Installation Guide: http://htsql.org/doc/install.html
+
+It is strongly recommended to configure the HTTP server to serve both
+the HTSQL service and HTML pages from the same domain; otherwise browser
+security settings would prevent HTRAF from accessing HTSQL service.
+That could be circumvented by using `Cross-Origin Resource Sharing
+(CORS)`_ on the HTSQL service, but note that not all browsers support
+CORS.
+
+.. _Cross-Origin Resource Sharing (CORS): http://www.w3.org/TR/cors/
+
+Installing HTRAF
+----------------
+
+The latest HTRAF package is available at
+http://dist.htsql.org/source/HTRAF-latest.zip.  Unpack the archive and copy the
+content of ``htraf`` directory to where you keep static data for your HTML
+pages.
+
+HTRAF is a pure-Javascript framework that depends on JQuery_ and a
+number of JQuery plugins.  The HTRAF package includes all the
+dependencies so you don't need to install them separately.
+
+.. _JQuery: http://jquery.org/
+
+You could also download HTRAF directly from the `source repository`_:
+
+.. sourcecode:: console
+
+   $ hg clone http://bitbucket.org/prometheus/htraf
+
+.. _source repository: http://bitbucket.org/prometheus/htraf
+
+The source repository does not include any dependencies.  To build a
+packaged version of HTRAF, go to the ``htraf`` directory and type:
+
+.. sourcecode:: console
+
+   $ make
+
+The generated package will be placed into ``build`` directory.
+
+Using HTRAF
+-----------
+
+To start using HTRAF, include the script ``htraf.js`` to your HTML
+pages:
+
+.. ifconfig:: build_website
+
+    .. demo::
+       :source:
+
+        <script type="text/javascript"
+            src="/htraf/htraf.js"
+            data-htsql-version="2"
+            data-htsql-prefix="/@demo">
+        </script>
+
+.. ifconfig:: not build_website
+
+    .. demo::
+       :source:
+
+        <script type="text/javascript"
+            src="../htraf/htraf.js"
+            data-htsql-version="2"
+            data-htsql-prefix="http://demo.htsql.org">
+        </script>
+
+To include ``htraf.js``, we use the regular ``<script>`` element, but
+with two non-standard attributes:
+
+`data-htsql-prefix` (absolute or relative URL)
+    This specifies the root of the HTSQL service; in the example above,
+    HTSQL service is located at http://htsql.org/@demo or
+    http://demo.htsql.org.
+
+    Note that the URL should not include a trailing slash.
+
+`data-htsql-version` (``1`` or ``2``)
+    The major version of HTSQL; currently the only meaningful value
+    is ``2``.
+
+
+Widgets
+=======
+
+HTML elements controlled by HTRAF are called *widgets*.  HTRAF
+supports a number of widgets: drop-down and regular lists, tables,
+charts, and also prodives an API for adding new widget types.
+
+HTRAF recognizes widgets by presense of attribute ``data-htsql``.  This
+attribute specifies an HTSQL query used to populate the content of the
+widget.
+
+The type of the widget is specified by attribute ``data-widget``; when
+the attribute is not set, the type is determined by the element tag.
+
+Widgets are controlled and populated automatically by HTRAF.  HTRAF
+takes over the widget content, preserving any styles and attibutes of
+the element itself, but replacing the content of the element with
+generated data.
+
+Linking
+-------
+
+Some widgets (in particular, lists and tables) allow the user to select
+a row from the list.  It is possible to bind two widgets together so
+that selecting a row in one widget updates the content in the other.
+
+To establish a link between two widgets, assign attribute ``data-ref``
+to the dependent widget --- it should contain the ``id`` of the parent
+widget.  When the HTSQL query of the dependent widget is evaluated, the
+selected value of the parent widget is passed to the query as a
+reference.
+
+Styling
+-------
+
+In addition to existing classes, HTRAF automatically assigns some
+custom CSS classes to controlled elements:
+
+`htraf`
+    Assigned to all widget elements.  This class has no default style
+    associated with it.
+
+`htraf-hover`
+    Assigned to a selectable row when the mouse hovers over it.  The
+    default style associated with this class is:
+
+    .. sourcecode:: css
+
+       background: #888888;
+
+`htraf-selected`
+    Assigned to the currently selected row.  The default style
+    associated with this class is:
+
+    .. sourcecode:: css
+
+       background: #DDDDDD;
+
+HTRAF provides no default styling for widgets, but ``demo/css``
+directory contains several sample stylesheets which could be used as a
+starting point.
+
+Example
+-------
+
+.. demo::
+   :source:
+
+    <h3>Select a School</h3>
+    <select id="school"
+        data-htsql="/school{code, name}"></select>
+
+    <div style="width: 500px; height: 350px;"
+        data-htsql="/program{title, count(student)}
+                            ?school.code=$school
+                            &exists(student)"
+        data-ref="school"
+        data-widget="chart"
+        data-type="pie"
+        data-title="Percent of Students by Program">
+    </div>
+
+    <h3>Departments</h3>
+    <p>Filter by name: <input id="department_name"/></p>
+    <table id="department"
+        data-htsql="/department{code, name}
+                               ?school.code=$school
+                               &name~$department_name"
+        data-ref="school department_name"
+        data-hide-column-0="true">
+    </table>
+    <p>
+        The selected department:
+        <em data-htsql="/department{name}?code=$department"
+            data-ref="department"></em> <br/>
+        The number of courses in the selected department:
+        <strong
+            data-htsql="/department{count(course)}
+                                   ?code=$department"
+            data-ref="department"></strong>
+    </p>
+
+    <h3>Courses</h3>
+    <table id="course"
+        data-htsql="/course?department_code=$department"
+        data-ref="department">
+    </table>
+
+More sample dashboards are available at `HTSQL Gallery`_.
+
+.. _HTSQL Gallery: http://htsql.org/gallery/index.html
+

@@ -1,0 +1,91 @@
+
+div.demo-block {
+  margin: 1em 0 0;
+}
+
+div.demo-block tt.demo-switch {
+  cursor: pointer;
+  font-size: 95%;
+  background-color: inherit;
+}
+
+div.demo-block div.demo-area {
+/*  background-color: yellow; */
+}
+
+/* div.demo-block div.demo-source {
+  display: none;
+}*/
+
+div.demo-block div.demo-hide {
+  display: none;
+}
+
+div.body .demo-area h3 {
+  margin: 1em 0 0;
+  padding: 0;
+  font-family: inherit;
+  font-weight: bold;
+  font-size: 105%;
+  color: #900;
+  background: transparent;
+  border: none;
+}
+
+div.body .demo-area em.htraf,
+div.body .demo-area strong.htraf {
+  color: #369;
+}
+
+div.body .demo-area table.htraf {
+	border-collapse: collapse;
+	border-spacing: 0;
+  border-left: 2px solid #ddd;
+  border-right: 2px solid #ddd;
+  border-bottom: 2px solid #ddd;
+}
+
+div.body .demo-area table.htraf th,
+div.body .demo-area table td {
+  padding: 4px 6px;
+  font-size: 90%;
+  vertical-align: top;
+}
+
+div.body .demo-area table.htraf th {
+  background: #ddd;
+  font-weight: bold;
+  color: #555;
+}
+
+div.body .demo-area table.htraf td {
+  border-right: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+}
+
+div.body .demo-area ul.htraf,
+div.body .demo-area ol.htraf,
+div.body .demo-area dl.htraf {
+  border-left: 6px solid #ddd;
+  padding-left: 0.5em;
+}
+
+div.body .demo-area ul.htraf li,
+div.body .demo-area ol.htraf li,
+div.body .demo-area dl.htraf dt {
+  margin: 0;
+  list-style-position: inside;
+}
+
+div.body .demo-area dl.htraf dd {
+  margin: 0 0 0 1em;
+}
+
+div.body .demo-area .htraf-hover {
+  background: #f6ddaf;
+}
+
+div.body .demo-area .htraf-selected {
+  background: #ffa43f;
+}
+

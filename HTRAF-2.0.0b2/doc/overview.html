@@ -1,0 +1,489 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>HTRAF Overview &mdash; HTRAF v2.0.0b2 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/htsqldoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/htrafdemo.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '2.0.0b2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/htrafdemo.js"></script>
+    <link rel="top" title="HTRAF v2.0.0b2 documentation" href="index.html" />
+    <link rel="next" title="Widget Reference" href="widgets.html" />
+    <link rel="prev" title="Widget Reference" href="widgets.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="widgets.html" title="Widget Reference"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="widgets.html" title="Widget Reference"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">HTRAF v2.0.0b2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="htraf-overview">
+<h1>HTRAF Overview<a class="headerlink" href="#htraf-overview" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>Extracting and presenting data from a relational database is one of
+the most common tasks in web development.  The usual approach splits
+this task into several <em>tiers</em>:</p>
+<ul class="simple">
+<li>a database tier that stores the data;</li>
+<li>a middleware tier is a server side application that retrieves data
+from the database and renders it into HTML;</li>
+<li>a presentation tier is a web browser that displays the rendered
+page to the users.</li>
+</ul>
+<p>While powerful and generic, this approach is quite heavyweight.  HTSQL
+and HTRAF radically simplify it by eliminating the middleware tier;
+instead you embed the data from the database directly to an HTML page.</p>
+<p>Take the following use case: allow a user to select a <em>school</em> from
+a drop-down list, then, for the selected school, display associated
+<em>departments</em> together with the <em>number of courses</em> offered by each
+department.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In all examples below, we use a sample database used for HTSQL
+regression testing.  The database contains schools, programs
+administered by a school, departments associated with a school, and
+courses offered by a department.</p>
+</div>
+<p>This is how to implement this use case with HTRAF:</p>
+<div class="demo-block compound">
+<div class="demo-source compound-first highlight-html"><div class="highlight"><pre> <span class="nt">&lt;select</span> <span class="na">id=</span><span class="s">&quot;school_code&quot;</span>
+     <span class="na">data-htsql=</span><span class="s">&quot;/school{code, name}</span>
+<span class="s">                        ?exists(department)&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;/select&gt;</span>
+
+ <span class="nt">&lt;table</span>
+     <span class="na">data-htsql=</span><span class="s">&quot;/department{name, count(course)}</span>
+<span class="s">                            ?school.code=$school_code&quot;</span>
+     <span class="na">data-ref=</span><span class="s">&quot;school_code&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;/table&gt;</span>
+</pre></div>
+</div>
+<tt class="demo-switch compound-middle docutils literal"><span class="pre">[-</span> <span class="pre">view</span> <span class="pre">demo]</span></tt><div class="demo-area compound-last"> <select id="school_code"
+     data-htsql="/school{code, name}
+                        ?exists(department)">
+ </select>
+
+ <table
+     data-htsql="/department{name, count(course)}
+                            ?school.code=$school_code"
+     data-ref="school_code">
+ </table></div></div>
+<p>This HTML fragment contains two elements: <tt class="docutils literal"><span class="pre">&lt;select&gt;</span></tt> and <tt class="docutils literal"><span class="pre">&lt;table&gt;</span></tt>
+which display a drop-down list of schools and a list of associated
+departments respectively.  The elements (we call them <em>widgets</em>) are
+empty, but have some extra attributes.</p>
+<p>The <tt class="docutils literal"><span class="pre">data-htsql</span></tt> attribute contains an HTSQL query; it instructs
+HTRAF to execute the query and use the result to populate the content
+of the widget.  Take a look at the output of the query:</p>
+<div class="htsql-io container">
+<div class="htsql-input container">
+<div class="highlight-htsql"><div class="highlight"><pre><a href="http://demo.htsql.org/school{code,%20name}?exists(department)" target="_new" class="htsql-arrow-link">&#x25E5;</a><a href="http://demo.htsql.org/school{code,%20name}?exists(department)" target="_new" class="htsql-link"><span class="o">/</span><span class="nb">school</span><span class="p">{</span><span class="nb">code</span><span class="p">,</span> <span class="nb">name</span><span class="p">}</span><span class="o">?</span><span class="nf">exists</span><span class="p">(</span><span class="nb">department</span><span class="p">)</span>
+</a></pre></div></div>
+</div>
+<div class="htsql-output container">
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="85%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">code</th>
+<th class="head">name</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td class="htsql-string-type">art</td>
+<td class="htsql-string-type">School of Art &amp; Design</td>
+</tr>
+<tr><td class="htsql-string-type">bus</td>
+<td class="htsql-string-type">School of Business</td>
+</tr>
+<tr><td class="htsql-string-type">edu</td>
+<td class="htsql-string-type">College of Education</td>
+</tr>
+<tr><td class="htsql-string-type">eng</td>
+<td class="htsql-string-type">School of Engineering</td>
+</tr>
+<tr><td class="htsql-string-type htsql-cut"></td>
+<td class="htsql-string-type htsql-cut"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>HTRAF renders this output into the following HTML code:</p>
+<div class="highlight-html"><div class="highlight"><pre><span class="nt">&lt;select</span> <span class="na">id=</span><span class="s">&quot;school_code&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">&quot;art&quot;</span><span class="nt">&gt;</span>School of Art and Design<span class="nt">&lt;/option&gt;</span>
+    <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">&quot;bus&quot;</span><span class="nt">&gt;</span>School of Business<span class="nt">&lt;/option&gt;</span>
+    <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">&quot;edu&quot;</span><span class="nt">&gt;</span>College of Education<span class="nt">&lt;/option&gt;</span>
+    <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">&quot;eng&quot;</span><span class="nt">&gt;</span>School of Engineering<span class="nt">&lt;/option&gt;</span>
+    ...
+<span class="nt">&lt;/select&gt;</span>
+</pre></div>
+</div>
+<p>The <tt class="docutils literal"><span class="pre">&lt;select&gt;</span></tt> widget is also assigned an anchor <tt class="docutils literal"><span class="pre">school_code</span></tt>,
+which allows us to refer to it from other widgets.</p>
+<p>The <tt class="docutils literal"><span class="pre">&lt;table&gt;</span></tt> widget is more interesting as it must refresh each time
+the user selects a school from the drop-down list.  To indicate this
+dependency, we add <tt class="docutils literal"><span class="pre">data-ref=&quot;school_code&quot;</span></tt> attribute.  Now the widget
+will be updated any time the <tt class="docutils literal"><span class="pre">school_code</span></tt> element signals a change.
+The value of the selected row is available in the HTSQL query under the
+name <tt class="docutils literal"><span class="pre">$school_code</span></tt>.</p>
+<p>For example, if the user selects <em>School of Engineering</em> in the
+drop-down list, then to update the linked table, HTRAF will execute the
+query:</p>
+<div class="htsql-io container">
+<div class="htsql-input container">
+<div class="highlight-htsql"><div class="highlight"><pre><a href="http://demo.htsql.org/department{name,%20count(course)}?school.code=$school_code%0A%20%20:where%20($school_code%20:=%20'eng')" target="_new" class="htsql-arrow-link">&#x25E5;</a><a href="http://demo.htsql.org/department{name,%20count(course)}?school.code=$school_code%0A%20%20:where%20($school_code%20:=%20'eng')" target="_new" class="htsql-link"><span class="o">/</span><span class="nb">department</span><span class="p">{</span><span class="nb">name</span><span class="p">,</span> <span class="nf">count</span><span class="p">(</span><span class="nb">course</span><span class="p">)}</span><span class="o">?</span><span class="nb">school</span><span class="p">.</span><span class="nb">code</span><span class="o">=</span><span class="p">$</span><span class="nb">school_code</span>
+  <span class="p">:</span><span class="nf">where</span> <span class="p">($</span><span class="nb">school_code</span> <span class="p">:=</span> <span class="s">&#39;eng&#39;</span><span class="p">)</span>
+</a></pre></div></div>
+</div>
+<div class="htsql-output container">
+<table border="1" class="docutils">
+<colgroup>
+<col width="63%" />
+<col width="37%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">name</th>
+<th class="head">count(course)</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td class="htsql-string-type">Bioengineering</td>
+<td class="htsql-integer-type">17</td>
+</tr>
+<tr><td class="htsql-string-type">Computer Science</td>
+<td class="htsql-integer-type">21</td>
+</tr>
+<tr><td class="htsql-string-type">Electrical Engineering</td>
+<td class="htsql-integer-type">14</td>
+</tr>
+<tr><td class="htsql-string-type">Mechanical Engineering</td>
+<td class="htsql-integer-type">19</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>For more information on HTSQL, see <a class="reference external" href="http://htsql.org/">http://htsql.org/</a>; this document
+describes how to use HTRAF toolkit to embed results of HTSQL queries
+into HTML pages.</p>
+</div>
+<div class="section" id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="installing-htsql">
+<h3>Installing HTSQL<a class="headerlink" href="#installing-htsql" title="Permalink to this headline">¶</a></h3>
+<p>HTRAF uses an HTSQL service to retrieve data from a relational database;
+therefore, in order to use HTRAF, you need to install HTSQL and deploy
+it as a web service against your database.  See <a class="reference external" href="http://htsql.org/doc/install.html">HTSQL Installation
+Guide</a> for more details.</p>
+<p>It is strongly recommended to configure the HTTP server to serve both
+the HTSQL service and HTML pages from the same domain; otherwise browser
+security settings would prevent HTRAF from accessing HTSQL service.
+That could be circumvented by using <a class="reference external" href="http://www.w3.org/TR/cors/">Cross-Origin Resource Sharing
+(CORS)</a> on the HTSQL service, but note that not all browsers support
+CORS.</p>
+</div>
+<div class="section" id="installing-htraf">
+<h3>Installing HTRAF<a class="headerlink" href="#installing-htraf" title="Permalink to this headline">¶</a></h3>
+<p>The latest HTRAF package is available at
+<a class="reference external" href="http://dist.htsql.org/source/HTRAF-latest.zip">http://dist.htsql.org/source/HTRAF-latest.zip</a>.  Unpack the archive and copy the
+content of <tt class="docutils literal"><span class="pre">htraf</span></tt> directory to where you keep static data for your HTML
+pages.</p>
+<p>HTRAF is a pure-Javascript framework that depends on <a class="reference external" href="http://jquery.org/">JQuery</a> and a
+number of JQuery plugins.  The HTRAF package includes all the
+dependencies so you don&#8217;t need to install them separately.</p>
+<p>You could also download HTRAF directly from the <a class="reference external" href="http://bitbucket.org/prometheus/htraf">source repository</a>:</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> hg clone http://bitbucket.org/prometheus/htraf
+</pre></div>
+</div>
+<p>The source repository does not include any dependencies.  To build a
+packaged version of HTRAF, go to the <tt class="docutils literal"><span class="pre">htraf</span></tt> directory and type:</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> make
+</pre></div>
+</div>
+<p>The generated package will be placed into <tt class="docutils literal"><span class="pre">build</span></tt> directory.</p>
+</div>
+<div class="section" id="using-htraf">
+<h3>Using HTRAF<a class="headerlink" href="#using-htraf" title="Permalink to this headline">¶</a></h3>
+<p>To start using HTRAF, include the script <tt class="docutils literal"><span class="pre">htraf.js</span></tt> to your HTML
+pages:</p>
+<div class="demo-block compound">
+<div class="demo-source compound-first highlight-html"><div class="highlight"><pre> <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span>
+     <span class="na">src=</span><span class="s">&quot;../htraf/htraf.js&quot;</span>
+     <span class="na">data-htsql-version=</span><span class="s">&quot;2&quot;</span>
+     <span class="na">data-htsql-prefix=</span><span class="s">&quot;http://demo.htsql.org&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;/script&gt;</span>
+</pre></div>
+</div>
+<tt class="demo-switch compound-middle docutils literal"><span class="pre">[-</span> <span class="pre">view</span> <span class="pre">demo]</span></tt><div class="demo-area compound-last"> <script type="text/javascript"
+     src="../htraf/htraf.js"
+     data-htsql-version="2"
+     data-htsql-prefix="http://demo.htsql.org">
+ </script></div></div>
+<p>To include <tt class="docutils literal"><span class="pre">htraf.js</span></tt>, we use the regular <tt class="docutils literal"><span class="pre">&lt;script&gt;</span></tt> element, but
+with two non-standard attributes:</p>
+<dl class="docutils">
+<dt><tt class="xref py py-obj docutils literal"><span class="pre">data-htsql-prefix</span></tt> (absolute or relative URL)</dt>
+<dd><p class="first">This specifies the root of the HTSQL service; in the example above,
+HTSQL service is located at <a class="reference external" href="http://htsql.org/&#64;demo">http://htsql.org/&#64;demo</a> or
+<a class="reference external" href="http://demo.htsql.org">http://demo.htsql.org</a>.</p>
+<p class="last">Note that the URL should not include a trailing slash.</p>
+</dd>
+<dt><tt class="xref py py-obj docutils literal"><span class="pre">data-htsql-version</span></tt> (<tt class="docutils literal"><span class="pre">1</span></tt> or <tt class="docutils literal"><span class="pre">2</span></tt>)</dt>
+<dd>The major version of HTSQL; currently the only meaningful value
+is <tt class="docutils literal"><span class="pre">2</span></tt>.</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="widgets">
+<h2>Widgets<a class="headerlink" href="#widgets" title="Permalink to this headline">¶</a></h2>
+<p>HTML elements controlled by HTRAF are called <em>widgets</em>.  HTRAF
+supports a number of widgets: drop-down and regular lists, tables,
+charts, and also prodives an API for adding new widget types.</p>
+<p>HTRAF recognizes widgets by presense of attribute <tt class="docutils literal"><span class="pre">data-htsql</span></tt>.  This
+attribute specifies an HTSQL query used to populate the content of the
+widget.</p>
+<p>The type of the widget is specified by attribute <tt class="docutils literal"><span class="pre">data-widget</span></tt>; when
+the attribute is not set, the type is determined by the element tag.</p>
+<p>Widgets are controlled and populated automatically by HTRAF.  HTRAF
+takes over the widget content, preserving any styles and attibutes of
+the element itself, but replacing the content of the element with
+generated data.</p>
+<div class="section" id="linking">
+<h3>Linking<a class="headerlink" href="#linking" title="Permalink to this headline">¶</a></h3>
+<p>Some widgets (in particular, lists and tables) allow the user to select
+a row from the list.  It is possible to bind two widgets together so
+that selecting a row in one widget updates the content in the other.</p>
+<p>To establish a link between two widgets, assign attribute <tt class="docutils literal"><span class="pre">data-ref</span></tt>
+to the dependent widget &#8212; it should contain the <tt class="docutils literal"><span class="pre">id</span></tt> of the parent
+widget.  When the HTSQL query of the dependent widget is evaluated, the
+selected value of the parent widget is passed to the query as a
+reference.</p>
+</div>
+<div class="section" id="styling">
+<h3>Styling<a class="headerlink" href="#styling" title="Permalink to this headline">¶</a></h3>
+<p>In addition to existing classes, HTRAF automatically assigns some
+custom CSS classes to controlled elements:</p>
+<dl class="docutils">
+<dt><tt class="xref py py-obj docutils literal"><span class="pre">htraf</span></tt></dt>
+<dd>Assigned to all widget elements.  This class has no default style
+associated with it.</dd>
+<dt><tt class="xref py py-obj docutils literal"><span class="pre">htraf-hover</span></tt></dt>
+<dd><p class="first">Assigned to a selectable row when the mouse hovers over it.  The
+default style associated with this class is:</p>
+<div class="last highlight-css"><div class="highlight"><pre><span class="nt">background</span><span class="o">:</span> <span class="nf">#888888</span><span class="o">;</span>
+</pre></div>
+</div>
+</dd>
+<dt><tt class="xref py py-obj docutils literal"><span class="pre">htraf-selected</span></tt></dt>
+<dd><p class="first">Assigned to the currently selected row.  The default style
+associated with this class is:</p>
+<div class="last highlight-css"><div class="highlight"><pre><span class="nt">background</span><span class="o">:</span> <span class="nf">#DDDDDD</span><span class="o">;</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+<p>HTRAF provides no default styling for widgets, but <tt class="docutils literal"><span class="pre">demo/css</span></tt>
+directory contains several sample stylesheets which could be used as a
+starting point.</p>
+</div>
+<div class="section" id="example">
+<h3>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
+<div class="demo-block compound">
+<div class="demo-source compound-first highlight-html"><div class="highlight"><pre> <span class="nt">&lt;h3&gt;</span>Select a School<span class="nt">&lt;/h3&gt;</span>
+ <span class="nt">&lt;select</span> <span class="na">id=</span><span class="s">&quot;school&quot;</span>
+     <span class="na">data-htsql=</span><span class="s">&quot;/school{code, name}&quot;</span><span class="nt">&gt;&lt;/select&gt;</span>
+
+ <span class="nt">&lt;div</span> <span class="na">style=</span><span class="s">&quot;width: 500px; height: 350px;&quot;</span>
+     <span class="na">data-htsql=</span><span class="s">&quot;/program{title, count(student)}</span>
+<span class="s">                         ?school.code=$school</span>
+<span class="s">                         &amp;exists(student)&quot;</span>
+     <span class="na">data-ref=</span><span class="s">&quot;school&quot;</span>
+     <span class="na">data-widget=</span><span class="s">&quot;chart&quot;</span>
+     <span class="na">data-type=</span><span class="s">&quot;pie&quot;</span>
+     <span class="na">data-title=</span><span class="s">&quot;Percent of Students by Program&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+
+ <span class="nt">&lt;h3&gt;</span>Departments<span class="nt">&lt;/h3&gt;</span>
+ <span class="nt">&lt;p&gt;</span>Filter by name: <span class="nt">&lt;input</span> <span class="na">id=</span><span class="s">&quot;department_name&quot;</span><span class="nt">/&gt;&lt;/p&gt;</span>
+ <span class="nt">&lt;table</span> <span class="na">id=</span><span class="s">&quot;department&quot;</span>
+     <span class="na">data-htsql=</span><span class="s">&quot;/department{code, name}</span>
+<span class="s">                            ?school.code=$school</span>
+<span class="s">                            &amp;name~$department_name&quot;</span>
+     <span class="na">data-ref=</span><span class="s">&quot;school department_name&quot;</span>
+     <span class="na">data-hide-column-0=</span><span class="s">&quot;true&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;/table&gt;</span>
+ <span class="nt">&lt;p&gt;</span>
+     The selected department:
+     <span class="nt">&lt;em</span> <span class="na">data-htsql=</span><span class="s">&quot;/department{name}?code=$department&quot;</span>
+         <span class="na">data-ref=</span><span class="s">&quot;department&quot;</span><span class="nt">&gt;&lt;/em&gt;</span> <span class="nt">&lt;br/&gt;</span>
+     The number of courses in the selected department:
+     <span class="nt">&lt;strong</span>
+         <span class="na">data-htsql=</span><span class="s">&quot;/department{count(course)}</span>
+<span class="s">                                ?code=$department&quot;</span>
+         <span class="na">data-ref=</span><span class="s">&quot;department&quot;</span><span class="nt">&gt;&lt;/strong&gt;</span>
+ <span class="nt">&lt;/p&gt;</span>
+
+ <span class="nt">&lt;h3&gt;</span>Courses<span class="nt">&lt;/h3&gt;</span>
+ <span class="nt">&lt;table</span> <span class="na">id=</span><span class="s">&quot;course&quot;</span>
+     <span class="na">data-htsql=</span><span class="s">&quot;/course?department_code=$department&quot;</span>
+     <span class="na">data-ref=</span><span class="s">&quot;department&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;/table&gt;</span>
+</pre></div>
+</div>
+<tt class="demo-switch compound-middle docutils literal"><span class="pre">[-</span> <span class="pre">view</span> <span class="pre">demo]</span></tt><div class="demo-area compound-last"> <h3>Select a School</h3>
+ <select id="school"
+     data-htsql="/school{code, name}"></select>
+
+ <div style="width: 500px; height: 350px;"
+     data-htsql="/program{title, count(student)}
+                         ?school.code=$school
+                         &exists(student)"
+     data-ref="school"
+     data-widget="chart"
+     data-type="pie"
+     data-title="Percent of Students by Program">
+ </div>
+
+ <h3>Departments</h3>
+ <p>Filter by name: <input id="department_name"/></p>
+ <table id="department"
+     data-htsql="/department{code, name}
+                            ?school.code=$school
+                            &name~$department_name"
+     data-ref="school department_name"
+     data-hide-column-0="true">
+ </table>
+ <p>
+     The selected department:
+     <em data-htsql="/department{name}?code=$department"
+         data-ref="department"></em> <br/>
+     The number of courses in the selected department:
+     <strong
+         data-htsql="/department{count(course)}
+                                ?code=$department"
+         data-ref="department"></strong>
+ </p>
+
+ <h3>Courses</h3>
+ <table id="course"
+     data-htsql="/course?department_code=$department"
+     data-ref="department">
+ </table></div></div>
+<p>More sample dashboards are available at <a class="reference external" href="http://htsql.org/gallery/index.html">HTSQL Gallery</a>.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">HTRAF Overview</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#prerequisites">Prerequisites</a><ul>
+<li><a class="reference internal" href="#installing-htsql">Installing HTSQL</a></li>
+<li><a class="reference internal" href="#installing-htraf">Installing HTRAF</a></li>
+<li><a class="reference internal" href="#using-htraf">Using HTRAF</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#widgets">Widgets</a><ul>
+<li><a class="reference internal" href="#linking">Linking</a></li>
+<li><a class="reference internal" href="#styling">Styling</a></li>
+<li><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="widgets.html"
+                        title="previous chapter">Widget Reference</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="widgets.html"
+                        title="next chapter">Widget Reference</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/overview.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="widgets.html" title="Widget Reference"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="widgets.html" title="Widget Reference"
+             >previous</a> |</li>
+        <li><a href="index.html">HTRAF v2.0.0b2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2006-2011 Prometheus Research, LLC; written by Owen McGettrick and Oleksiy Golovko.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

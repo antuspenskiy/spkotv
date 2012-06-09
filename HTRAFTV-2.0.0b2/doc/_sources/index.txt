@@ -1,0 +1,100 @@
+*****************
+  HTRAF Toolkit
+*****************
+
+.. toctree::
+   :hidden:
+
+   overview
+   widgets
+
+
+HTRAF is a toolkit for embedding data into HTML pages.  With HTRAF, you
+can associate certain HTML elements with data sources --- when the page
+is opened in a browser, HTRAF fetches the data from the database and
+displays it on the page.
+
+HTRAF is based upon JQuery_ Javascript framework and relies on an HTSQL_
+service to retrieve data from the database.  HTRAF is written by Owen 
+McGettrick and Oleksiy Golovko and released under dual MIT/GPL license.
+
+.. _HTSQL: http://htsql.org/
+.. _JQuery: http://jquery.org/
+
+
+Quick Start
+===========
+
+Download HTRAF
+--------------
+
+Download the latest build of HTRAF from:
+
+    http://dist.htsql.org/source/HTRAF-latest.zip
+
+Include the framework
+---------------------
+
+Include the script ``htraf.js`` to your HTML pages and associate it with
+an HTSQL service:
+
+.. ifconfig:: build_website
+
+    .. demo::
+       :source:
+
+        <script type="text/javascript"
+            src="/htraf/htraf.js"
+            data-htsql-version="2"
+            data-htsql-prefix="/@demo">
+        </script>
+
+.. ifconfig:: not build_website
+
+    .. demo::
+       :source:
+
+        <script type="text/javascript"
+            src="../htraf/htraf.js"
+            data-htsql-version="2"
+            data-htsql-prefix="http://demo.htsql.org">
+        </script>
+
+Select data sources
+-------------------
+
+Construct HTSQL queries to serve as data sources for HTML elements:
+
+.. htsql::
+   :cut: 4
+
+    /school{name, count(program), count(department)}
+
+Attach the sources to HTML elements
+-----------------------------------
+
+Use attribute `data-htraf` to populate the element with the result of
+the query:
+
+.. demo::
+   :source:
+
+    <table data-htsql="/school{name,count(program),count(department)}">
+    </table>
+
+
+Documentation
+=============
+
+.. toctree::
+   :maxdepth: 2
+
+   overview
+   widgets
+
+Indices and tables
+------------------
+
+* :ref:`genindex`
+* :ref:`search`
+

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta http-equiv="refresh" content="3600">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+    <title>Статистика | Графики ФНС</title>
+    <script type="text/javascript"
+            src="HTRAF-2.0.0b2/htraf/htraf.js"
+            data-htsql-version="2"
+            data-htsql-prefix="/test">
+    </script>
+    <link rel="stylesheet" type="text/css" href="HTRAF-2.0.0b2/demo/css/htraf-02.css"/>
+
+</head>
+
+<body>
+
+<div id="header">
+    <p><a href="http://192.168.148.164/fns.html">Статистика по ФНС</a> | <a
+            href="http://192.168.148.164/graphfns.html">Графики по ФНС</a> | <a href="http://192.168.148.164/pf.html">Статистика
+        по УПФР</a> | <a
+            href="http://192.168.148.164/graphpf.html">Графики по УПФР</a> | </p>
+</div>
+
+<div id="wrap">
+
+    <div class=box-group>
+        <div class="item" style="width: 600px; height: 300px; float: left"
+             data-htsql="/ifns{name,report- :as %D0%9E%D1%82%D0%BF%D1%80%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5}.limit(10)"
+             data-widget="chart"
+             data-type="bar"
+             data-yint="true"
+             data-title="Количество Отправленных отчетов">
+        </div>
+
+        <div class="item" style="width: 600px; height: 300px; float: left"
+             data-htsql="/ifns?name~'77'|name~'50'|name~'33'{name,report-}.limit(10)"
+             data-ref="focus"
+             data-type="pie"
+             data-widget="chart"
+             data-title="Отправленные отчеты">
+        </div>
+
+        <div class="item" style="width:600px; height: 300px; float: left; clear: both"
+             data-widget="chart"
+             data-type="bar"
+             data-yint="true"
+             data-title="Количество Доставленных-Полученных отчетов"
+             data-htsql="/ifns{name,report_receipt- :as %D0%94%D0%BE%D1%81%D1%82%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5, accept-report_receipt- :as %D0%9F%D0%BE%D0%BB%D1%83%D1%87%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5}.limit(10)">
+        </div>
+
+
+        <div class="item" style="width: 600px; height: 300px; float:left"
+             data-htsql="/ifns?name~'77'|name~'50'|name~'33'{name,report_receipt-}.limit(10)"
+             data-ref="focus"
+             data-type="pie"
+             data-widget="chart"
+             data-title="Доставленные отчеты">
+        </div>
+
+        <div class="item" style="width: 600px; height: 300px; float:left"
+             data-htsql="/ifns?name~'77'|name~'50'|name~'33'{name,accept-report_receipt-}.limit(10)"
+             data-ref="focus"
+             data-type="pie"
+             data-widget="chart"
+             data-title="Полученные отчеты">
+        </div>
+
+    </div>
+</div>
+
+<div id="footer">
+    <p><a href="mailto:uaa@skbkontur.ru">uaa@skbkontur.ru</a> | Copyright © 2012 spko</p>
+</div>
+
+</body>
+
+</html>

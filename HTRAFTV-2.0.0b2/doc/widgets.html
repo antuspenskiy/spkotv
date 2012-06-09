@@ -1,0 +1,605 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Widget Reference &mdash; HTRAF v2.0.0b2 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/htsqldoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/htrafdemo.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '2.0.0b2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/htrafdemo.js"></script>
+    <link rel="top" title="HTRAF v2.0.0b2 documentation" href="index.html" />
+    <link rel="prev" title="HTRAF Overview" href="overview.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="overview.html" title="HTRAF Overview"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">HTRAF v2.0.0b2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="widget-reference">
+<h1>Widget Reference<a class="headerlink" href="#widget-reference" title="Permalink to this headline">¶</a></h1>
+<p>HTML elements controlled by HTRAF are called <em>HTRAF widgets</em>.  HTRAF
+recognizes widgets by presence of attribute <tt class="docutils literal"><span class="pre">data-htsql</span></tt>.</p>
+<p>The type of the widget is determined by attribute <tt class="docutils literal"><span class="pre">data-widget</span></tt>;
+if it is not set, the type is derived from the element tag.
+Conveniently, commonly used widget types are called <tt class="docutils literal"><span class="pre">select</span></tt>,
+<tt class="docutils literal"><span class="pre">table</span></tt>, <tt class="docutils literal"><span class="pre">ul</span></tt>, <tt class="docutils literal"><span class="pre">ol</span></tt>, so often there is no need to specify the
+widget type explicitly.</p>
+<p>When the widget type is not recognized, the default type called
+<em>singleValue</em> is used.</p>
+<div class="demo-block compound">
+<div class="demo-source compound-first highlight-html"><div class="highlight"><pre> <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span>
+     <span class="na">src=</span><span class="s">&quot;../htraf/htraf.js&quot;</span>
+     <span class="na">data-htsql-version=</span><span class="s">&quot;2&quot;</span>
+     <span class="na">data-htsql-prefix=</span><span class="s">&quot;http://demo.htsql.org&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;/script&gt;</span>
+</pre></div>
+</div>
+<tt class="demo-switch compound-middle docutils literal"><span class="pre">[-</span> <span class="pre">view</span> <span class="pre">demo]</span></tt><div class="demo-area compound-last"> <script type="text/javascript"
+     src="../htraf/htraf.js"
+     data-htsql-version="2"
+     data-htsql-prefix="http://demo.htsql.org">
+ </script></div></div>
+<div class="section" id="table-widget">
+<h2>Table Widget<a class="headerlink" href="#table-widget" title="Permalink to this headline">¶</a></h2>
+<p>Probably the most common widget in HTRAF, <em>table</em> renders data using
+HTML <tt class="docutils literal"><span class="pre">&lt;table&gt;</span></tt> element.</p>
+<p>Table rows are selectable; when selected, the widget emits the value
+from the first column.</p>
+<div class="section" id="example">
+<h3>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
+<div class="demo-block compound">
+<div class="demo-source compound-first highlight-html"><div class="highlight"><pre> <span class="nt">&lt;table</span> <span class="na">data-htsql=</span><span class="s">&quot;/school&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;/table&gt;</span>
+</pre></div>
+</div>
+<tt class="demo-switch compound-middle docutils literal"><span class="pre">[-</span> <span class="pre">view</span> <span class="pre">demo]</span></tt><div class="demo-area compound-last"> <table data-htsql="/school">
+ </table></div></div>
+</div>
+<div class="section" id="attributes">
+<h3>Attributes<a class="headerlink" href="#attributes" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt><tt class="xref py py-obj docutils literal"><span class="pre">data-hide-column-0</span></tt> (<tt class="docutils literal"><span class="pre">true</span></tt>)</dt>
+<dd><p class="first">Do not display the first output column.</p>
+<p>Useful when the first column contains a value of the key that is
+passed to dependent widgets, but should not be displayed in the
+output.</p>
+<div class="demo-block compound">
+<div class="demo-source compound-first highlight-html"><div class="highlight"><pre> <span class="nt">&lt;h3&gt;</span>Select a School<span class="nt">&lt;/h3&gt;</span>
+ <span class="nt">&lt;table</span> <span class="na">id=</span><span class="s">&quot;school_with_hidden_code&quot;</span>
+     <span class="na">data-htsql=</span><span class="s">&quot;/school{code, name}?exists(department)&quot;</span>
+     <span class="na">data-hide-column-0=</span><span class="s">&quot;true&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;/table&gt;</span>
+
+ <span class="nt">&lt;h3&gt;</span>Associated Departments<span class="nt">&lt;/h3&gt;</span>
+ <span class="nt">&lt;table</span>
+     <span class="na">data-htsql=</span><span class="s">&quot;/department{name}</span>
+<span class="s">                            ?school.code=$school_with_hidden_code&quot;</span>
+     <span class="na">data-ref=</span><span class="s">&quot;school_with_hidden_code&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;/table&gt;</span>
+</pre></div>
+</div>
+<tt class="demo-switch compound-middle docutils literal"><span class="pre">[-</span> <span class="pre">view</span> <span class="pre">demo]</span></tt><div class="demo-area compound-last"> <h3>Select a School</h3>
+ <table id="school_with_hidden_code"
+     data-htsql="/school{code, name}?exists(department)"
+     data-hide-column-0="true">
+ </table>
+
+ <h3>Associated Departments</h3>
+ <table
+     data-htsql="/department{name}
+                            ?school.code=$school_with_hidden_code"
+     data-ref="school_with_hidden_code">
+ </table></div></div>
+<p class="last">In this example, clicking on a row of the first widget passes the
+code of the selected school to the second widget.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="css-classes">
+<h3>CSS Classes<a class="headerlink" href="#css-classes" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt><tt class="xref py py-obj docutils literal"><span class="pre">rN</span></tt> (<em>N</em> is integer starting from <em>0</em>)</dt>
+<dd>Set on <em>N</em>-th row (<tt class="docutils literal"><span class="pre">&lt;tr&gt;</span></tt>) element of the widget.</dd>
+<dt><tt class="xref py py-obj docutils literal"><span class="pre">cN</span></tt> (<em>N</em> is integer starting from <em>0</em>)</dt>
+<dd>Set on each <em>N</em>-th column (<tt class="docutils literal"><span class="pre">&lt;td&gt;</span></tt>) element of the widget.</dd>
+<dt><tt class="xref py py-obj docutils literal"><span class="pre">even</span></tt>, <tt class="xref py py-obj docutils literal"><span class="pre">odd</span></tt></dt>
+<dd>Set on each even/odd row element.</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="select-widget">
+<h2>Select Widget<a class="headerlink" href="#select-widget" title="Permalink to this headline">¶</a></h2>
+<p>The <em>select</em> widget presents data in the form of a drop-down menu using
+a <tt class="docutils literal"><span class="pre">&lt;select&gt;</span></tt> element.</p>
+<p>The HTSQL query associated with the widget should produce one or two
+columns.  When the output has two columns, they are used as the value
+and the label of each option respectively.  When the output has only one
+column, this column is used to populate both the option value and the
+option label.</p>
+<div class="section" id="id1">
+<h3>Example<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<div class="demo-block compound">
+<div class="demo-source compound-first highlight-html"><div class="highlight"><pre> <span class="nt">&lt;select</span> <span class="na">data-htsql=</span><span class="s">&quot;/school{code}&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;/select&gt;</span>
+
+ <span class="nt">&lt;select</span> <span class="na">data-htsql=</span><span class="s">&quot;/school{code, name}&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;/select&gt;</span>
+</pre></div>
+</div>
+<tt class="demo-switch compound-middle docutils literal"><span class="pre">[-</span> <span class="pre">view</span> <span class="pre">demo]</span></tt><div class="demo-area compound-last"> <select data-htsql="/school{code}">
+ </select>
+
+ <select data-htsql="/school{code, name}">
+ </select></div></div>
+</div>
+<div class="section" id="id2">
+<h3>Attributes<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt><tt class="xref py py-obj docutils literal"><span class="pre">multiple</span></tt></dt>
+<dd><p class="first">The select widget admits multiple selections.  When more then one
+choice is selected, the values are passed to the dependent widgets
+using <tt class="docutils literal"><span class="pre">{...}</span></tt> list.</p>
+<div class="demo-block compound">
+<div class="demo-source compound-first highlight-html"><div class="highlight"><pre> <span class="nt">&lt;select</span> <span class="na">id=</span><span class="s">&quot;multiple_schools&quot;</span> <span class="na">size=</span><span class="s">&quot;4&quot;</span> <span class="na">multiple</span>
+     <span class="na">data-htsql=</span><span class="s">&quot;/school{code, name}?exists(department)&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;/select&gt;</span>
+
+ <span class="nt">&lt;table</span>
+     <span class="na">data-htsql=</span><span class="s">&quot;/department{name}</span>
+<span class="s">                            ?school.code=$multiple_schools&quot;</span>
+     <span class="na">data-ref=</span><span class="s">&quot;multiple_schools&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;/table&gt;</span>
+</pre></div>
+</div>
+<tt class="demo-switch compound-middle docutils literal"><span class="pre">[-</span> <span class="pre">view</span> <span class="pre">demo]</span></tt><div class="demo-area compound-last"> <select id="multiple_schools" size="4" multiple
+     data-htsql="/school{code, name}?exists(department)">
+ </select>
+
+ <table
+     data-htsql="/department{name}
+                            ?school.code=$multiple_schools"
+     data-ref="multiple_schools">
+ </table></div></div>
+<p class="last">In this example, you may select multiple rows in the school list;
+the table below will show all associated departments.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="ul-and-ol-widgets">
+<h2>UL and OL Widgets<a class="headerlink" href="#ul-and-ol-widgets" title="Permalink to this headline">¶</a></h2>
+<p>The <em>ul</em> and <em>ol</em> widgets present data in a form of an unordered and
+ordered lists using <tt class="docutils literal"><span class="pre">&lt;ul&gt;</span></tt> and <tt class="docutils literal"><span class="pre">&lt;ol&gt;</span></tt> HTML elements.</p>
+<p>Just like the select widget, the ul and ol widgets accept input data
+with one or two columns.  When the input data contains two columns, the
+first column indicates the value emitted when an entry is selected and
+the second row specifies the entry content.</p>
+<div class="section" id="id3">
+<h3>Example<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<div class="demo-block compound">
+<div class="demo-source compound-first highlight-html"><div class="highlight"><pre> <span class="nt">&lt;ul</span> <span class="na">data-htsql=</span><span class="s">&quot;/school{code}?exists(department)&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;/ul&gt;</span>
+
+ <span class="nt">&lt;ol</span> <span class="na">data-htsql=</span><span class="s">&quot;/school{code, name}?exists(department)&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;/ol&gt;</span>
+</pre></div>
+</div>
+<tt class="demo-switch compound-middle docutils literal"><span class="pre">[-</span> <span class="pre">view</span> <span class="pre">demo]</span></tt><div class="demo-area compound-last"> <ul data-htsql="/school{code}?exists(department)">
+ </ul>
+
+ <ol data-htsql="/school{code, name}?exists(department)">
+ </ol></div></div>
+</div>
+</div>
+<div class="section" id="iframe-widget">
+<h2>IFrame Widget<a class="headerlink" href="#iframe-widget" title="Permalink to this headline">¶</a></h2>
+<p>The <em>iframe</em> widget embeds the response from the HTSQL service in a
+frame embedded in the page.  This widget displays the output as it is
+formatted by HTSQL.</p>
+<div class="section" id="id4">
+<h3>Example<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<div class="demo-block compound">
+<div class="demo-source compound-first highlight-html"><div class="highlight"><pre> <span class="nt">&lt;iframe</span> <span class="na">width=</span><span class="s">&quot;600&quot;</span> <span class="na">height=</span><span class="s">&quot;300&quot;</span>
+     <span class="na">data-htsql=</span><span class="s">&quot;/school{code, name}?exists(department)&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;/iframe&gt;</span>
+</pre></div>
+</div>
+<tt class="demo-switch compound-middle docutils literal"><span class="pre">[-</span> <span class="pre">view</span> <span class="pre">demo]</span></tt><div class="demo-area compound-last"> <iframe width="600" height="300"
+     data-htsql="/school{code, name}?exists(department)">
+ </iframe></div></div>
+</div>
+</div>
+<div class="section" id="chart-widget">
+<h2>Chart Widget<a class="headerlink" href="#chart-widget" title="Permalink to this headline">¶</a></h2>
+<p>The <em>chart</em> widget presents data in a graphical form.  The first column
+of the output specifies the chart labels, the remaining columns specify
+the respective values.</p>
+<p>Since HTML does not have a <tt class="docutils literal"><span class="pre">&lt;chart&gt;</span></tt> element, you need to use a
+<tt class="docutils literal"><span class="pre">&lt;div&gt;</span></tt> element and specify the widget type using <tt class="docutils literal"><span class="pre">data-widget</span></tt>
+attribute.</p>
+<div class="section" id="id5">
+<h3>Example<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<div class="demo-block compound">
+<div class="demo-source compound-first highlight-html"><div class="highlight"><pre> <span class="nt">&lt;div</span> <span class="na">style=</span><span class="s">&quot;width: 700px; height: 350px&quot;</span>
+     <span class="na">data-widget=</span><span class="s">&quot;chart&quot;</span>
+     <span class="na">data-yint=</span><span class="s">&quot;true&quot;</span>
+     <span class="na">data-title=</span><span class="s">&quot;Number of Departments by School&quot;</span>
+     <span class="na">data-htsql=</span><span class="s">&quot;/school{code,</span>
+<span class="s">                         num_dept := count(department)}</span>
+<span class="s">                        ?num_dept&gt;0&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+</pre></div>
+</div>
+<tt class="demo-switch compound-middle docutils literal"><span class="pre">[-</span> <span class="pre">view</span> <span class="pre">demo]</span></tt><div class="demo-area compound-last"> <div style="width: 700px; height: 350px"
+     data-widget="chart"
+     data-yint="true"
+     data-title="Number of Departments by School"
+     data-htsql="/school{code,
+                         num_dept := count(department)}
+                        ?num_dept>0">
+ </div></div></div>
+</div>
+<div class="section" id="chart-types">
+<h3>Chart Types<a class="headerlink" href="#chart-types" title="Permalink to this headline">¶</a></h3>
+<p>The widget provides several types of charts: bar chart, pie chart and
+line chart.  The chart type is specified using attribute <tt class="docutils literal"><span class="pre">data-type</span></tt>:</p>
+<dl class="docutils">
+<dt><tt class="xref py py-obj docutils literal"><span class="pre">bar</span></tt> (<em>bar chart</em>)</dt>
+<dd>To display a bar chart, the input data should contain two or more
+columns: the first column contains the labels, the subsequent
+columns are numeric values.  Each value is represented by the height
+of a rectangular bar.</dd>
+<dt><tt class="xref py py-obj docutils literal"><span class="pre">stacked</span></tt> (<em>stacked bar chart</em>)</dt>
+<dd>Same as the regular bar chart except that when the data contain two
+or more value columns, the respective bars are stacked in a single
+line.</dd>
+<dt><tt class="xref py py-obj docutils literal"><span class="pre">pie</span></tt> (<em>pie chart</em>)</dt>
+<dd>For a pie chart, the input data should contain two columns: the
+labels and respective numeric values.</dd>
+<dt><tt class="xref py py-obj docutils literal"><span class="pre">line</span></tt> (<em>line chart</em>)</dt>
+<dd>To generate a line chart, the input data should contain two or more
+columns: the first column contains (numeric or date) values for the
+<em>X</em> axis, the rest contain numeric values for the <em>Y</em> axis.</dd>
+</dl>
+<div class="demo-block compound">
+<div class="demo-source compound-first highlight-html"><div class="highlight"><pre> <span class="nt">&lt;div</span> <span class="na">style=</span><span class="s">&quot;width: 345px; height: 325px; float: left&quot;</span>
+     <span class="na">data-widget=</span><span class="s">&quot;chart&quot;</span>
+     <span class="na">data-type=</span><span class="s">&quot;bar&quot;</span>
+     <span class="na">data-yint=</span><span class="s">&quot;true&quot;</span>
+     <span class="na">data-title=</span><span class="s">&quot;Bar Chart&quot;</span>
+     <span class="na">data-htsql=</span><span class="s">&quot;/school{code,</span>
+<span class="s">                         num_dept := count(department),</span>
+<span class="s">                         num_prog := count(program)}</span>
+<span class="s">                        ?num_dept&gt;2&amp;num_prog&gt;2&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+
+ <span class="nt">&lt;div</span> <span class="na">style=</span><span class="s">&quot;width: 345px; height: 325px; float: left&quot;</span>
+     <span class="na">data-widget=</span><span class="s">&quot;chart&quot;</span>
+     <span class="na">data-type=</span><span class="s">&quot;stack&quot;</span>
+     <span class="na">data-yint=</span><span class="s">&quot;true&quot;</span>
+     <span class="na">data-title=</span><span class="s">&quot;Stacked Bar Chart&quot;</span>
+     <span class="na">data-htsql=</span><span class="s">&quot;/school{code,</span>
+<span class="s">                         num_dept := count(department),</span>
+<span class="s">                         num_prog := count(program)}</span>
+<span class="s">                        ?num_dept&gt;2&amp;num_prog&gt;2&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+
+
+ <span class="nt">&lt;div</span> <span class="na">style=</span><span class="s">&quot;width: 345px; height: 325px; float: left; clear: both&quot;</span>
+     <span class="na">data-widget=</span><span class="s">&quot;chart&quot;</span>
+     <span class="na">data-type=</span><span class="s">&quot;pie&quot;</span>
+     <span class="na">data-yint=</span><span class="s">&quot;true&quot;</span>
+     <span class="na">data-title=</span><span class="s">&quot;Pie Chart&quot;</span>
+     <span class="na">data-htsql=</span><span class="s">&quot;/school{code,</span>
+<span class="s">                         num_dept := count(department)}</span>
+<span class="s">                        ?num_dept&gt;2&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+
+ <span class="nt">&lt;div</span> <span class="na">style=</span><span class="s">&quot;width: 345px; height: 325px; float: left&quot;</span>
+     <span class="na">data-widget=</span><span class="s">&quot;chart&quot;</span>
+     <span class="na">data-type=</span><span class="s">&quot;line&quot;</span>
+     <span class="na">data-yint=</span><span class="s">&quot;true&quot;</span>
+     <span class="na">data-title=</span><span class="s">&quot;Line Chart&quot;</span>
+     <span class="na">data-htsql=</span><span class="s">&quot;/(school^{num_dept := count(department)})</span>
+<span class="s">                         {num_dept,</span>
+<span class="s">                          num_school := count(school),</span>
+<span class="s">                          num_prog := count(school.program)}&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;/div&gt;</span>
+
+ <span class="nt">&lt;div</span> <span class="na">style=</span><span class="s">&quot;clear: both&quot;</span><span class="nt">&gt;&lt;/div&gt;</span>
+</pre></div>
+</div>
+<tt class="demo-switch compound-middle docutils literal"><span class="pre">[-</span> <span class="pre">view</span> <span class="pre">demo]</span></tt><div class="demo-area compound-last"> <div style="width: 345px; height: 325px; float: left"
+     data-widget="chart"
+     data-type="bar"
+     data-yint="true"
+     data-title="Bar Chart"
+     data-htsql="/school{code,
+                         num_dept := count(department),
+                         num_prog := count(program)}
+                        ?num_dept>2&num_prog>2">
+ </div>
+
+ <div style="width: 345px; height: 325px; float: left"
+     data-widget="chart"
+     data-type="stack"
+     data-yint="true"
+     data-title="Stacked Bar Chart"
+     data-htsql="/school{code,
+                         num_dept := count(department),
+                         num_prog := count(program)}
+                        ?num_dept>2&num_prog>2">
+ </div>
+
+
+ <div style="width: 345px; height: 325px; float: left; clear: both"
+     data-widget="chart"
+     data-type="pie"
+     data-yint="true"
+     data-title="Pie Chart"
+     data-htsql="/school{code,
+                         num_dept := count(department)}
+                        ?num_dept>2">
+ </div>
+
+ <div style="width: 345px; height: 325px; float: left"
+     data-widget="chart"
+     data-type="line"
+     data-yint="true"
+     data-title="Line Chart"
+     data-htsql="/(school^{num_dept := count(department)})
+                         {num_dept,
+                          num_school := count(school),
+                          num_prog := count(school.program)}">
+ </div>
+
+ <div style="clear: both"></div></div></div>
+</div>
+<div class="section" id="id6">
+<h3>Attributes<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt><tt class="xref py py-obj docutils literal"><span class="pre">style</span></tt></dt>
+<dd>Use CSS properties <tt class="docutils literal"><span class="pre">width</span></tt> and <tt class="docutils literal"><span class="pre">height</span></tt> to specify the size of
+the chart.</dd>
+<dt><tt class="xref py py-obj docutils literal"><span class="pre">data-type</span></tt> (<tt class="docutils literal"><span class="pre">bar</span></tt> (default), <tt class="docutils literal"><span class="pre">stack</span></tt>, <tt class="docutils literal"><span class="pre">pie</span></tt>, <tt class="docutils literal"><span class="pre">line</span></tt>)</dt>
+<dd>Indicates the chart type: <em>bar chart</em>, <em>stacked bar chart</em>, <em>pie
+chart</em> or <em>line chart</em>.  Each chart type has specific requirements
+for the input data.</dd>
+<dt><tt class="xref py py-obj docutils literal"><span class="pre">data-legend</span></tt> (<tt class="docutils literal"><span class="pre">ne</span></tt> (default), <tt class="docutils literal"><span class="pre">se</span></tt>, <tt class="docutils literal"><span class="pre">nw</span></tt>, <tt class="docutils literal"><span class="pre">sw</span></tt>, <tt class="docutils literal"><span class="pre">no</span></tt>)</dt>
+<dd>Position of the chart legend; <tt class="docutils literal"><span class="pre">no</span></tt> means no legend displayed.</dd>
+<dt><tt class="xref py py-obj docutils literal"><span class="pre">data-title</span></tt> (a string)</dt>
+<dd>The chart title.</dd>
+<dt><tt class="xref py py-obj docutils literal"><span class="pre">data-show-title</span></tt> (<tt class="docutils literal"><span class="pre">true</span></tt> (default) or <tt class="docutils literal"><span class="pre">false</span></tt>)</dt>
+<dd>Set to <tt class="docutils literal"><span class="pre">false</span></tt> to hide the chart title.</dd>
+<dt><tt class="xref py py-obj docutils literal"><span class="pre">data-yint</span></tt> (<tt class="docutils literal"><span class="pre">true</span></tt> or <tt class="docutils literal"><span class="pre">false</span></tt> (default))</dt>
+<dd>Set to force integer axis ticks.</dd>
+<dt><tt class="xref py py-obj docutils literal"><span class="pre">data-x-vertical</span></tt> (<tt class="docutils literal"><span class="pre">true</span></tt> or <tt class="docutils literal"><span class="pre">false</span></tt> (default))</dt>
+<dd>Set to swap <em>X</em> and <em>Y</em> axes.</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="the-default-widget">
+<h2>The Default Widget<a class="headerlink" href="#the-default-widget" title="Permalink to this headline">¶</a></h2>
+<p>The default widget (called <em>singleValue</em>) is a fallback used when the
+actual widget type cannot be determined.  The widget replaces the
+content of the element with the value from the first row and the first
+column of the data source.</p>
+<div class="section" id="id7">
+<h3>Example<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
+<div class="demo-block compound">
+<div class="demo-source compound-first highlight-html"><div class="highlight"><pre> <span class="nt">&lt;p&gt;</span>The database contains
+ <span class="nt">&lt;strong</span> <span class="na">data-htsql=</span><span class="s">&quot;/count(school)&quot;</span><span class="nt">&gt;&lt;/strong&gt;</span>
+ records in the <span class="nt">&lt;em&gt;</span>school<span class="nt">&lt;/em&gt;</span> table and
+ <span class="nt">&lt;strong</span> <span class="na">data-htsql=</span><span class="s">&quot;/count(department)&quot;</span><span class="nt">&gt;&lt;/strong&gt;</span>
+ records in the <span class="nt">&lt;em&gt;</span>department<span class="nt">&lt;/em&gt;</span> table.<span class="nt">&lt;/p&gt;</span>
+</pre></div>
+</div>
+<tt class="demo-switch compound-middle docutils literal"><span class="pre">[-</span> <span class="pre">view</span> <span class="pre">demo]</span></tt><div class="demo-area compound-last"> <p>The database contains
+ <strong data-htsql="/count(school)"></strong>
+ records in the <em>school</em> table and
+ <strong data-htsql="/count(department)"></strong>
+ records in the <em>department</em> table.</p></div></div>
+</div>
+</div>
+<div class="section" id="common-attributes">
+<h2>Common Attributes<a class="headerlink" href="#common-attributes" title="Permalink to this headline">¶</a></h2>
+<p>In this section, we describe attributes that could be defined on any
+HTRAF widget:</p>
+<dl class="docutils">
+<dt><tt class="xref py py-obj docutils literal"><span class="pre">id</span></tt> (a unique identifier)</dt>
+<dd>Indicates the name of the widget; must be unique across the whole
+HTML page.  The name is used for declaring widget dependencies and
+passing values between widgets.</dd>
+<dt><tt class="xref py py-obj docutils literal"><span class="pre">data-htsql</span></tt> (an HTSQL query)</dt>
+<dd>HTSQL query executed to populate the widget.  This is a mandatory
+attribute.</dd>
+<dt><tt class="xref py py-obj docutils literal"><span class="pre">data-widget</span></tt> (widget type: <tt class="docutils literal"><span class="pre">select</span></tt>, <tt class="docutils literal"><span class="pre">table</span></tt>, <tt class="docutils literal"><span class="pre">chart</span></tt>, etc)</dt>
+<dd>The type of the widget; when not present, HTRAF assumes it coincides
+with the tag name.</dd>
+<dt><tt class="xref py py-obj docutils literal"><span class="pre">data-ref</span></tt> (space-separated list of parent widgets)</dt>
+<dd>If set, indicates that the widget depends on selections on the given
+parent widgets.  The selected values are passed to the HTSQL query
+as references.</dd>
+<dt><tt class="xref py py-obj docutils literal"><span class="pre">data-onchange</span></tt> (Javascript)</dt>
+<dd>Code to execute when the widget value changes.</dd>
+<dt><tt class="xref py py-obj docutils literal"><span class="pre">data-onerror</span></tt> (Javascript)</dt>
+<dd>Code to execute when an HTSQL request produced an error.</dd>
+<dt><tt class="xref py py-obj docutils literal"><span class="pre">data-empty</span></tt> (Javascript)</dt>
+<dd>Code to execute when an HTSQL request returned no rows.</dd>
+<dt><tt class="xref py py-obj docutils literal"><span class="pre">data-onbeforeload</span></tt> (Javascript)</dt>
+<dd>Code to execute before making an HTSQL request.</dd>
+<dt><tt class="xref py py-obj docutils literal"><span class="pre">data-onafterload</span></tt> (Javascript)</dt>
+<dd>Code to execute after the widget is rendered.</dd>
+</dl>
+<p>In Javascript code, <tt class="docutils literal"><span class="pre">this</span></tt> refers to the DOM element of the widget.</p>
+</div>
+<div class="section" id="adding-new-widgets">
+<h2>Adding New Widgets<a class="headerlink" href="#adding-new-widgets" title="Permalink to this headline">¶</a></h2>
+<p>HTRAF provides an API for defining new widget types.  The API is based
+on <a class="reference external" href="http://jqueryui.com/">JQuery UI</a> framework; see JQuery UI documentation for details.</p>
+<p>In the following example, we create a widget called <em>DL</em> that uses HTML
+<tt class="docutils literal"><span class="pre">&lt;dl&gt;</span></tt> element to create a definition list.  The widget requires data
+source with two columns: the first column populates the term and the
+second column populates the description of the term.</p>
+<div class="demo-block compound">
+<div class="demo-source compound-first highlight-html"><div class="highlight"><pre> <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span><span class="nt">&gt;</span>
+     <span class="nx">$</span><span class="p">.</span><span class="nx">widget</span><span class="p">(</span><span class="s2">&quot;htraf.dl&quot;</span><span class="p">,</span> <span class="nx">$</span><span class="p">.</span><span class="nx">htraf</span><span class="p">.</span><span class="nx">Base</span><span class="p">,</span> <span class="p">{</span>
+         <span class="nx">render</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+             <span class="kd">var</span> <span class="nx">rows</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">data</span><span class="p">;</span>
+             <span class="kd">var</span> <span class="nx">element</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">;</span>
+             <span class="nx">$</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">rows</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span> <span class="nx">row</span><span class="p">)</span> <span class="p">{</span>
+                 <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;&lt;dt/&gt;&quot;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="nx">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]).</span><span class="nx">appendTo</span><span class="p">(</span><span class="nx">element</span><span class="p">);</span>
+                 <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;&lt;dd/&gt;&quot;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="nx">row</span><span class="p">[</span><span class="mi">1</span><span class="p">]).</span><span class="nx">appendTo</span><span class="p">(</span><span class="nx">element</span><span class="p">);</span>
+             <span class="p">});</span>
+         <span class="p">}</span>
+     <span class="p">});</span>
+ <span class="nt">&lt;/script&gt;</span>
+</pre></div>
+</div>
+<tt class="demo-switch compound-middle docutils literal"><span class="pre">[-</span> <span class="pre">view</span> <span class="pre">demo]</span></tt><div class="demo-area compound-last"> <script type="text/javascript">
+     $.widget("htraf.dl", $.htraf.Base, {
+         render: function() {
+             var rows = this.data.data;
+             var element = this.element;
+             $.each(rows, function(i, row) {
+                 $("<dt/>").text(row[0]).appendTo(element);
+                 $("<dd/>").text(row[1]).appendTo(element);
+             });
+         }
+     });
+ </script></div></div>
+<p>Here we create a new widget type <tt class="docutils literal"><span class="pre">htraf.dl</span></tt> using standard JQuery UI
+function <tt class="docutils literal"><span class="pre">$.widget()</span></tt>.  The class <tt class="docutils literal"><span class="pre">$.htraf.Base</span></tt> is the base class
+for all HTRAF widgets; most subclasses need only to redefine method
+<tt class="docutils literal"><span class="pre">render()</span></tt> which is called when the widget receives data from the data
+source and needs to render itself on the page.  In this method,
+<tt class="docutils literal"><span class="pre">this.data</span></tt> refers to the output from the HTSQL request,
+<tt class="docutils literal"><span class="pre">this.element</span></tt> is the widget element.</p>
+<p>Now, let&#8217;s see how it works:</p>
+<div class="demo-block compound">
+<div class="demo-source compound-first highlight-html"><div class="highlight"><pre> <span class="nt">&lt;dl</span> <span class="na">data-htsql=</span><span class="s">&quot;/school{code, name}?exists(department)&quot;</span><span class="nt">&gt;&lt;/dl&gt;</span>
+</pre></div>
+</div>
+<tt class="demo-switch compound-middle docutils literal"><span class="pre">[-</span> <span class="pre">view</span> <span class="pre">demo]</span></tt><div class="demo-area compound-last"> <dl data-htsql="/school{code, name}?exists(department)"></dl></div></div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Widget Reference</a><ul>
+<li><a class="reference internal" href="#table-widget">Table Widget</a><ul>
+<li><a class="reference internal" href="#example">Example</a></li>
+<li><a class="reference internal" href="#attributes">Attributes</a></li>
+<li><a class="reference internal" href="#css-classes">CSS Classes</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#select-widget">Select Widget</a><ul>
+<li><a class="reference internal" href="#id1">Example</a></li>
+<li><a class="reference internal" href="#id2">Attributes</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#ul-and-ol-widgets">UL and OL Widgets</a><ul>
+<li><a class="reference internal" href="#id3">Example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#iframe-widget">IFrame Widget</a><ul>
+<li><a class="reference internal" href="#id4">Example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#chart-widget">Chart Widget</a><ul>
+<li><a class="reference internal" href="#id5">Example</a></li>
+<li><a class="reference internal" href="#chart-types">Chart Types</a></li>
+<li><a class="reference internal" href="#id6">Attributes</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#the-default-widget">The Default Widget</a><ul>
+<li><a class="reference internal" href="#id7">Example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#common-attributes">Common Attributes</a></li>
+<li><a class="reference internal" href="#adding-new-widgets">Adding New Widgets</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="overview.html"
+                        title="previous chapter">HTRAF Overview</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/widgets.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="overview.html" title="HTRAF Overview"
+             >previous</a> |</li>
+        <li><a href="index.html">HTRAF v2.0.0b2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2006-2011 Prometheus Research, LLC; written by Owen McGettrick and Oleksiy Golovko.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

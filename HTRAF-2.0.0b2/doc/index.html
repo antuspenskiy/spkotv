@@ -1,0 +1,246 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>HTRAF Toolkit &mdash; HTRAF v2.0.0b2 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/htsqldoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/htrafdemo.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '2.0.0b2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/htrafdemo.js"></script>
+    <link rel="top" title="HTRAF v2.0.0b2 documentation" href="#" />
+    <link rel="next" title="HTRAF Overview" href="overview.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="overview.html" title="HTRAF Overview"
+             accesskey="N">next</a> |</li>
+        <li><a href="#">HTRAF v2.0.0b2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="htraf-toolkit">
+<h1>HTRAF Toolkit<a class="headerlink" href="#htraf-toolkit" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<p>HTRAF is a toolkit for embedding data into HTML pages.  With HTRAF, you
+can associate certain HTML elements with data sources &#8212; when the page
+is opened in a browser, HTRAF fetches the data from the database and
+displays it on the page.</p>
+<p>HTRAF is based upon <a class="reference external" href="http://jquery.org/">JQuery</a> Javascript framework and relies on an <a class="reference external" href="http://htsql.org/">HTSQL</a>
+service to retrieve data from the database.  HTRAF is written by Owen
+McGettrick and Oleksiy Golovko and released under dual MIT/GPL license.</p>
+<div class="section" id="quick-start">
+<h2>Quick Start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="download-htraf">
+<h3>Download HTRAF<a class="headerlink" href="#download-htraf" title="Permalink to this headline">¶</a></h3>
+<p>Download the latest build of HTRAF from:</p>
+<blockquote>
+<div><a class="reference external" href="http://dist.htsql.org/source/HTRAF-latest.zip">http://dist.htsql.org/source/HTRAF-latest.zip</a></div></blockquote>
+</div>
+<div class="section" id="include-the-framework">
+<h3>Include the framework<a class="headerlink" href="#include-the-framework" title="Permalink to this headline">¶</a></h3>
+<p>Include the script <tt class="docutils literal"><span class="pre">htraf.js</span></tt> to your HTML pages and associate it with
+an HTSQL service:</p>
+<div class="demo-block compound">
+<div class="demo-source compound-first highlight-html"><div class="highlight"><pre> <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span>
+     <span class="na">src=</span><span class="s">&quot;../htraf/htraf.js&quot;</span>
+     <span class="na">data-htsql-version=</span><span class="s">&quot;2&quot;</span>
+     <span class="na">data-htsql-prefix=</span><span class="s">&quot;http://demo.htsql.org&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;/script&gt;</span>
+</pre></div>
+</div>
+<tt class="demo-switch compound-middle docutils literal"><span class="pre">[-</span> <span class="pre">view</span> <span class="pre">demo]</span></tt><div class="demo-area compound-last"> <script type="text/javascript"
+     src="../htraf/htraf.js"
+     data-htsql-version="2"
+     data-htsql-prefix="http://demo.htsql.org">
+ </script></div></div>
+</div>
+<div class="section" id="select-data-sources">
+<h3>Select data sources<a class="headerlink" href="#select-data-sources" title="Permalink to this headline">¶</a></h3>
+<p>Construct HTSQL queries to serve as data sources for HTML elements:</p>
+<div class="htsql-io container">
+<div class="htsql-input container">
+<div class="highlight-htsql"><div class="highlight"><pre><a href="http://demo.htsql.org/school{name,%20count(program),%20count(department)}" target="_new" class="htsql-arrow-link">&#x25E5;</a><a href="http://demo.htsql.org/school{name,%20count(program),%20count(department)}" target="_new" class="htsql-link"><span class="o">/</span><span class="nb">school</span><span class="p">{</span><span class="nb">name</span><span class="p">,</span> <span class="nf">count</span><span class="p">(</span><span class="nb">program</span><span class="p">),</span> <span class="nf">count</span><span class="p">(</span><span class="nb">department</span><span class="p">)}</span>
+</a></pre></div></div>
+</div>
+<div class="htsql-output container">
+<table border="1" class="docutils">
+<colgroup>
+<col width="42%" />
+<col width="26%" />
+<col width="32%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">name</th>
+<th class="head">count(program)</th>
+<th class="head">count(department)</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td class="htsql-string-type">School of Art &amp; Design</td>
+<td class="htsql-integer-type">3</td>
+<td class="htsql-integer-type">2</td>
+</tr>
+<tr><td class="htsql-string-type">School of Business</td>
+<td class="htsql-integer-type">6</td>
+<td class="htsql-integer-type">3</td>
+</tr>
+<tr><td class="htsql-string-type">College of Education</td>
+<td class="htsql-integer-type">7</td>
+<td class="htsql-integer-type">2</td>
+</tr>
+<tr><td class="htsql-string-type">School of Engineering</td>
+<td class="htsql-integer-type">8</td>
+<td class="htsql-integer-type">4</td>
+</tr>
+<tr><td class="htsql-string-type htsql-cut"></td>
+<td class="htsql-integer-type htsql-cut"></td>
+<td class="htsql-integer-type htsql-cut"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="section" id="attach-the-sources-to-html-elements">
+<h3>Attach the sources to HTML elements<a class="headerlink" href="#attach-the-sources-to-html-elements" title="Permalink to this headline">¶</a></h3>
+<p>Use attribute <tt class="xref py py-obj docutils literal"><span class="pre">data-htraf</span></tt> to populate the element with the result of
+the query:</p>
+<div class="demo-block compound">
+<div class="demo-source compound-first highlight-html"><div class="highlight"><pre> <span class="nt">&lt;table</span> <span class="na">data-htsql=</span><span class="s">&quot;/school{name,count(program),count(department)}&quot;</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;/table&gt;</span>
+</pre></div>
+</div>
+<tt class="demo-switch compound-middle docutils literal"><span class="pre">[-</span> <span class="pre">view</span> <span class="pre">demo]</span></tt><div class="demo-area compound-last"> <table data-htsql="/school{name,count(program),count(department)}">
+ </table></div></div>
+</div>
+</div>
+<div class="section" id="documentation">
+<h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">HTRAF Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#widgets">Widgets</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="widgets.html">Widget Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="widgets.html#table-widget">Table Widget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="widgets.html#select-widget">Select Widget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="widgets.html#ul-and-ol-widgets">UL and OL Widgets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="widgets.html#iframe-widget">IFrame Widget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="widgets.html#chart-widget">Chart Widget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="widgets.html#the-default-widget">The Default Widget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="widgets.html#common-attributes">Common Attributes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="widgets.html#adding-new-widgets">Adding New Widgets</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="indices-and-tables">
+<h3>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><em>Index</em></a></li>
+<li><a class="reference internal" href="search.html"><em>Search Page</em></a></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">HTRAF Toolkit</a><ul>
+<li><a class="reference internal" href="#quick-start">Quick Start</a><ul>
+<li><a class="reference internal" href="#download-htraf">Download HTRAF</a></li>
+<li><a class="reference internal" href="#include-the-framework">Include the framework</a></li>
+<li><a class="reference internal" href="#select-data-sources">Select data sources</a></li>
+<li><a class="reference internal" href="#attach-the-sources-to-html-elements">Attach the sources to HTML elements</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#documentation">Documentation</a><ul>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Next topic</h4>
+  <p class="topless"><a href="overview.html"
+                        title="next chapter">HTRAF Overview</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/index.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="overview.html" title="HTRAF Overview"
+             >next</a> |</li>
+        <li><a href="#">HTRAF v2.0.0b2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2006-2011 Prometheus Research, LLC; written by Owen McGettrick and Oleksiy Golovko.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

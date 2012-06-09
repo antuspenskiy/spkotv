@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset=utf-8 http-equiv="refresh" content="900">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+    <title>spko.tv</title>
+    <script type="text/javascript"
+            src="HTRAFTV-2.0.0b2/htraf/htraf.js"
+            data-htsql-version="2"
+            data-htsql-prefix="/test">
+    </script>
+    <link rel="stylesheet" type="text/css" href="HTRAFTV-2.0.0b2/demo/css/htraf-02.css"/>
+
+</head>
+
+<body>
+
+<div>
+
+    <div style="width: 800px; height: 560px;"
+         data-widget="chart"
+         data-type="bar"
+         data-yint="true"
+         data-title="Количество Отправленных отчетов"
+         data-htsql="/ifns{name,report- :as %D0%9E%D1%82%D0%BF%D1%80%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5}.limit(10)">
+    </div>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+
+    <div style="width: 800px; height: 560px;"
+         data-widget="chart"
+         data-type="bar"
+         data-yint="true"
+         data-title="Количество Доставленных\Полученных отчетов"
+         data-htsql="/ifns{name,report_receipt- :as %D0%94%D0%BE%D1%81%D1%82%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5, accept-report_receipt :as %D0%9F%D0%BE%D0%BB%D1%83%D1%87%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5}.limit(10)">
+    </div>
+</div>
+
+</body>
+
+</html>

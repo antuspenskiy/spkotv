@@ -1,0 +1,40 @@
+Copyright (c) 2010-2011 Prometheus Research, LLC.
+All rights reserved.
+
+Like JQuery, you may use HTRAF under the terms of either the MIT License
+or the GNU General Public License (GPL) Version 2
+
+The MIT License is recommended for most projects. It is simple and easy
+to understand and it places almost no restrictions on what you can do
+with HTRAF.
+
+If the GPL suits your project better you are also free to use HTRAF
+under that license.
+
+You don't have to do anything special to choose one license or the other
+and you don't have to notify anyone which license you are using. You are
+free to use HTRAF in commercial projects as long as the copyright header
+is left intact.
+
+HTRAF includes the following external libraries:
+
+    jQuery JavaScript Library
+    http://jquery.com/
+    Copyright 2011, John Resig
+
+    jQuery UI
+    http://jqueryui.com/
+    Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
+
+    jQuery blockUI plugin 
+    http://jquery.malsup.com/block/
+    Copyright (c) 2007-2010 M. Alsup
+
+    jqPlot Charts
+    http://www.jqplot.com/
+    Copyright (c) 2009 - 2010 Chris Leonello
+
+    JSON in JavaScript
+    http://www.json.org/js.html
+    Public Domain
+

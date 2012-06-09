@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script type="text/javascript">
+        function colorCells(table) {
+            $(table).find('td').each(function () {
+                var val = $(this).text() - 0;
+                if (val < 3000 && val > 800) $(this).addClass('td-red'); else if (val < 800 && val > 400) $(this).addClass('td-yellow'); else if (val < 400 && val > 100) $(this).addClass('td-green');
+            })
+        }</script>
+
+    <meta http-equiv="refresh" content="3600">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+    <title>Статистика по ФНС</title>
+    <script type="text/javascript"
+            src="HTRAF-2.0.0b2/htraf/htraf.js"
+            data-htsql-version="2"
+            data-htsql-prefix="/test">
+    </script>
+    <link rel="stylesheet" type="text/css" href="HTRAF-2.0.0b2/demo/css/htraf-02.css"/>
+</head>
+
+<body>
+
+<div id="header">
+    <p><a href="http://192.168.148.164/fns.html">Статистика по ФНС</a> | <a href="http://192.168.148.164/graphfns.html">Графики
+        по ФНС</a> | <a href="http://192.168.148.164/pf.html">Статистика по УПФР</a> | <a
+            href="http://192.168.148.164/pf.html">Графики по УПФР</a> | 
+
+<?php  
+ if(function_exists("date_default_timezone_set") and function_exists("date_default_timezone_get"))
+ @date_default_timezone_set(@date_default_timezone_get());
+  
+$url = "";  
+$ch = curl_init();      
+curl_setopt($ch, CURLOPT_URL, $url);        
+curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+curl_setopt($ch, CURLOPT_NOBODY, 1);
+curl_setopt($ch, CURLOPT_FILETIME, true );  
+$result = curl_exec($ch);   
+$time = curl_getinfo($ch, CURLINFO_FILETIME);
+print date('d/m/y H:i:s', $time);
+curl_close($ch);   
+?>
+
+</p>
+</div>
+
+<div id="wrap">
+    <p class="second">Поиск по коду: <label for="name"></label><input id="name"/></p>
+
+    <div class=box-group>
+        <div>
+            <table id="search"
+                   data-htsql="/ifns{name :as %D0%9A%D0%BE%D0%B4, last_visit :as %D0%A1%D0%93%D0%94 , files_count :as %D0%9A%D0%BE%D0%BB%D0%B8%D1%87%D0%B5%D1%81%D1%82%D0%B2%D0%BE, report :as %D0%9E%D1%82%D0%BF%D1%80%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5, report_receipt :as %D0%94%D0%BE%D1%81%D1%82%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5, accept-report_receipt :as %D0%9F%D0%BE%D0%BB%D1%83%D1%87%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5, accept :as %D0%9E%D0%B1%D1%89%D0%B5%D0%B5}?head(name,length($name))=$name"
+                   data-ref="name"
+                   data-onafterload="colorCells(this);">
+            </table>
+        </div>
+
+        <div>
+            <table id="ifns_report"
+                   data-htsql="/ifns{name :as '%D0%9A%D0%BE%D0%B4', last_visit :as '%D0%A1%D0%93%D0%94', files_count :as '%D0%9A%D0%BE%D0%BB%D0%B8%D1%87%D0%B5%D1%81%D1%82%D0%B2%D0%BE', report- :as '%D0%9E%D1%82%D0%BF%D1%80%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5', report_receipt :as '%D0%94%D0%BE%D1%81%D1%82%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5', accept-report_receipt :as '%D0%9F%D0%BE%D0%BB%D1%83%D1%87%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5'}.limit(10)"
+                   data-onafterload="colorCells(this);">
+            </table>
+        <div>  
+        <br>  
+
+        <div>
+            <table id="ifns_report_receipt"
+                       data-htsql="/ifns{name :as '%D0%9A%D0%BE%D0%B4', last_visit :as '%D0%A1%D0%93%D0%94' , files_count :as '%D0%9A%D0%BE%D0%BB%D0%B8%D1%87%D0%B5%D1%81%D1%82%D0%B2%D0%BE', report :as '%D0%9E%D1%82%D0%BF%D1%80%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5', report_receipt- :as '%D0%94%D0%BE%D1%81%D1%82%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5', accept-report_receipt :as '%D0%9F%D0%BE%D0%BB%D1%83%D1%87%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5'}.limit(10)"
+                       data-onafterload="colorCells(this);">
+            </table>
+                <br>
+
+        <div>
+            <p class="first">Сводная информация по регионам</p>
+            <table id="regionfns"
+                       data-htsql="/define(ifns.group := if(name~'77',77,name~'50',50,name~'33',33,name~'99',99)).ifns^group{group :as '%D0%A0%D0%B5%D0%B3%D0%B8%D0%BE%D0%BD', (sum(ifns.report)) :as '%D0%9E%D1%82%D0%BF%D1%80%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5', (sum(ifns.report_receipt)) :as '%D0%94%D0%BE%D1%81%D1%82%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5', (sum(ifns.accept)-sum(ifns.report_receipt)) :as '%D0%9F%D0%BE%D0%BB%D1%83%D1%87%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5',(sum(ifns.accept)) :as '%D0%9E%D0%B1%D1%89%D0%B5%D0%B5'}">
+            </table>  
+        </div>
+        
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="footer">
+    <p><a href="mailto:uaa@skbkontur.ru">uaa@skbkontur.ru</a> | Copyright © 2012 spko</p>
+</div>
+</body>
+</html>
