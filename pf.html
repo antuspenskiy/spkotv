@@ -23,19 +23,24 @@
     <script type="text/javascript"
             src="HTRAF-2.0.0b2/htraf/htraf.js"
             data-htsql-version="2"
-            data-htsql-prefix="/test">
-    </script>
+            data-htsql-prefix="/test"></script>
     <link rel="stylesheet" type="text/css" href="HTRAF-2.0.0b2/demo/css/htraf-02.css"/>
 </head>
 
 <body>
 
-<div id="header">
-    <p><a href="http://192.168.148.164/fns.html">Статистика по ФНС</a> | <a href="http://192.168.148.164/graphfns.html">Графики
-        по ФНС</a> | <a href="http://192.168.148.164/pf.html">Статистика по УПФР</a> | <a
-            href="http://192.168.148.164/graphpf.html">Графики по УПФР</a> | 
-
-<?php  
+    <div id="header">
+        <p>
+            <a href="http://192.168.148.164/fns.html">Статистика по ФНС</a>
+            |
+            <a href="http://192.168.148.164/graphfns.html">Графики по ФНС</a>
+            |
+            <a href="http://192.168.148.164/pf.html">Статистика по УПФР</a>
+            |
+            <a href="http://192.168.148.164/graphpf.html">Графики по УПФР</a>
+            |
+            <!-- CHANGED: Php libcurl.dll script. Connect to ftp and get date and time of current file -->
+            <?php  
  if(function_exists("date_default_timezone_set") and function_exists("date_default_timezone_get"))
  @date_default_timezone_set(@date_default_timezone_get());
   
@@ -50,68 +55,67 @@ $result = curl_exec($ch);
 $time = curl_getinfo($ch, CURLINFO_FILETIME);
 print date('d/m/y H:i:s', $time);
 curl_close($ch);   
-?>
+?></p>
+    </div>
 
-</p>
-</div>
+    <div id="wrap">
+        <p class="second">
+            Поиск :
+            <label for="name"></label>
+            <input id="name"/>
+        </p>
 
-<div id="wrap">
-    <p class="second">Поиск : <label for="name"></label><input id="name"/></p>
-
-    <div class=box-group>
-        <div>
-            <table id="search"
+        <!-- CHANGED: This query will not work if dont have foreign key in table test.pfr.upfr ->
+        test.pf_cod.upfr  -->
+        <div class=box-group>
+            <div>
+                <table id="search"
                    data-htsql="/pf_cod{cod :as '%D0%A6%D0%9E%D0%94',upfr_id :as '%D0%93%D0%A3', pfr{upfr :as '%D0%A3%D0%9F%D0%A4%D0%A0', without_pd :as '%D0%91%D0%B5%D0%B7%20%D0%BF%D0%B4' , with_errors :as '%D0%9E%D1%88%D0%B8%D0%B1%D0%BA%D0%B8', summary :as '%D0%9E%D0%B1%D1%89%D0%B5%D0%B5%20%D0%BA%D0%BE%D0%BB-%D0%B2%D0%BE', pr_plus :as '%D0%BF%D1%80%2B', pr_minus :as '%D0%BF%D1%80-', summary-pr_plus-pr_minus :as '%D0%91%D0%B5%D0%B7%20%D0%BF%D1%80'}}.sort(pfr.upfr+)?head(cod,length($name))=$name|head(pfr.upfr,length($name))=$name|head(upfr_id,length($name))=$name"
                    data-ref="name"
-                   data-onafterload="colorCells(this);">
-            </table>
-        </div>
+                   data-onafterload="colorCells(this);"></table>
+            </div>
 
-
-        <div>
-            <table id="upfr_without_pd"
+            <div>
+                <table id="upfr_without_pd"
                    data-htsql="/pf_cod{cod :as '%D0%A6%D0%9E%D0%94',upfr_id :as '%D0%93%D0%A3', pfr{upfr :as '%D0%A3%D0%9F%D0%A4%D0%A0%0A', without_pd- :as '%D0%91%D0%B5%D0%B7%20%D0%BF%D0%B4' , with_errors :as '%D0%9E%D1%88%D0%B8%D0%B1%D0%BA%D0%B8', summary :as '%D0%9E%D0%B1%D1%89%D0%B5%D0%B5%20%D0%BA%D0%BE%D0%BB-%D0%B2%D0%BE', pr_plus :as '%D0%BF%D1%80%2B', pr_minus :as '%D0%BF%D1%80-', summary-pr_plus-pr_minus :as '%D0%91%D0%B5%D0%B7%20%D0%BF%D1%80'}}.sort(pfr.without_pd-).limit(10)"
-                   data-onafterload="colorCells(this);">
-            </table>
-            <br>
-
-        <div>
-            <table id="upfr_errors"
-                       data-htsql="/pf_cod{cod :as '%D0%A6%D0%9E%D0%94',upfr_id :as '%D0%93%D0%A3', pfr{upfr :as '%D0%A3%D0%9F%D0%A4%D0%A0%0A', without_pd :as '%D0%91%D0%B5%D0%B7%20%D0%BF%D0%B4' , with_errors :as '%D0%9E%D1%88%D0%B8%D0%B1%D0%BA%D0%B8', summary :as '%D0%9E%D0%B1%D1%89%D0%B5%D0%B5%20%D0%BA%D0%BE%D0%BB-%D0%B2%D0%BE', pr_plus :as '%D0%BF%D1%80%2B', pr_minus :as '%D0%BF%D1%80-', summary-pr_plus-pr_minus :as '%D0%91%D0%B5%D0%B7%20%D0%BF%D1%80'}}.sort(pfr.with_errors-).limit(10)"
-                       data-onafterload="colorCells(this);">
-            </table>
+                   data-onafterload="colorCells(this);"></table>
                 <br>
 
-        <div>
-            <table id="upfr_without_pr"
+                <div>
+                    <table id="upfr_errors"
+                       data-htsql="/pf_cod{cod :as '%D0%A6%D0%9E%D0%94',upfr_id :as '%D0%93%D0%A3', pfr{upfr :as '%D0%A3%D0%9F%D0%A4%D0%A0%0A', without_pd :as '%D0%91%D0%B5%D0%B7%20%D0%BF%D0%B4' , with_errors :as '%D0%9E%D1%88%D0%B8%D0%B1%D0%BA%D0%B8', summary :as '%D0%9E%D0%B1%D1%89%D0%B5%D0%B5%20%D0%BA%D0%BE%D0%BB-%D0%B2%D0%BE', pr_plus :as '%D0%BF%D1%80%2B', pr_minus :as '%D0%BF%D1%80-', summary-pr_plus-pr_minus :as '%D0%91%D0%B5%D0%B7%20%D0%BF%D1%80'}}.sort(pfr.with_errors-).limit(10)"
+                       data-onafterload="colorCells(this);"></table>
+                    <br>
+
+                    <div>
+                        <table id="upfr_without_pr"
                        data-htsql="/pf_cod{cod :as '%D0%A6%D0%9E%D0%94',upfr_id :as '%D0%93%D0%A3', pfr{upfr :as '%D0%A3%D0%9F%D0%A4%D0%A0%0A', without_pd :as '%D0%91%D0%B5%D0%B7%20%D0%BF%D0%B4' , with_errors :as '%D0%9E%D1%88%D0%B8%D0%B1%D0%BA%D0%B8', summary :as '%D0%9E%D0%B1%D1%89%D0%B5%D0%B5%20%D0%BA%D0%BE%D0%BB-%D0%B2%D0%BE', pr_plus :as '%D0%BF%D1%80%2B', pr_minus :as '%D0%BF%D1%80-', summary-pr_plus-pr_minus :as '%D0%91%D0%B5%D0%B7%20%D0%BF%D1%80'}}.sort(pfr.summary-pfr.pr_plus-pfr.pr_minus-).limit(10)"
-                       data-onafterload="colorCells(this);">
-            </table>
-            <br>
+                       data-onafterload="colorCells(this);"></table>
+                        <br></div>
+
+                    <div>
+                        <p class="first">Сводная информация по ГУ</p>
+                        <table id="gu"
+                       data-htsql="/define(pfr.group := if(upfr~'087-9'|upfr='060-022',9,upfr~'087-1',10,upfr~'087-6'|upfr='060-002',8,upfr~'087-4'|upfr='060-001'|upfr='060-041'|upfr='060-010',7,upfr~'087-3'|upfr='060-029',6,upfr~'087-2'|upfr='060-050'|upfr='060-006',5,upfr~'087-7'|upfr='060-036'|upfr='060-048'|upfr='060-056',4,upfr~'087-5'|upfr='060-027',3,upfr~'087-8'|upfr='060-032',2,upfr='087-001'|upfr='060-045',1)).pfr^group{group :as ' %D0%93%D0%A3',(sum(pfr.summary)) :as '%D0%9E%D0%B1%D1%89%D0%B5%D0%B5%20%D0%BA%D0%BE%D0%BB-%D0%B2%D0%BE',(sum(pfr.pr_plus)) :as '%D0%98%D0%B7%20%D0%BD%D0%B8%D1%85%20%D1%81%20%D0%BF%D1%80%2B',(sum(pfr.pr_minus)) :as '%D0%98%D0%B7%20%D0%BD%D0%B8%D1%85%20%D1%81%20%D0%BF%D1%80-',(sum(pfr.summary)-(sum(pfr.pr_plus)+(sum(pfr.pr_minus)))) :as '%D0%91%D0%B5%D0%B7%20%D0%BF%D1%80%D0%BE%D1%82%D0%BE%D0%BA%D0%BE%D0%BB%D0%BE%D0%B2',(sum(pfr.pr_plus)+(sum(pfr.pr_minus)))/(sum(pfr.summary)/100) :round 2 :as '%25 %D0%9E%D0%B1%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D0%B8'}.limit(10)"></table>
+                    </div>
+
+                    <br>
+
+                    <div>
+                        <p class="first">Сводная информация по регионам</p>
+                        <table id="regionpf"
+                       data-htsql="/define(pfr.group := if(upfr~'087-',77,upfr~'060-',50,upfr~'043-',33)).pfr^group{group :as '%D0%A0%D0%B5%D0%B3%D0%B8%D0%BE%D0%BD',(sum(pfr.summary)) :as '%D0%9E%D0%B1%D1%89%D0%B5%D0%B5%20%D0%BA%D0%BE%D0%BB-%D0%B2%D0%BE',(sum(pfr.pr_plus)) :as '%D0%98%D0%B7%20%D0%BD%D0%B8%D1%85%20%D1%81%20%D0%BF%D1%80%2B',(sum(pfr.pr_minus)) :as '%D0%98%D0%B7%20%D0%BD%D0%B8%D1%85%20%D1%81%20%D0%BF%D1%80-',(sum(pfr.summary)-((sum(pfr.pr_plus)+(sum(pfr.pr_minus))))) :as '%D0%91%D0%B5%D0%B7%20%D0%BF%D1%80%D0%BE%D1%82%D0%BE%D0%BA%D0%BE%D0%BB%D0%BE%D0%B2',(sum(pfr.pr_plus)+(sum(pfr.pr_minus)))/(sum(pfr.summary)/100) :round 2 :as '%25 %D0%9E%D0%B1%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D0%B8'}.limit(10)"></table>
+                    </div>
+
+                </div>
+            </div>
         </div>
 
-        <div>
-            <p class="first">Сводная информация по ГУ</p>
-            <table id="gu"
-                       data-htsql="/define(pfr.group := if(upfr~'087-9'|upfr='060-022',9,upfr~'087-1',10,upfr~'087-6'|upfr='060-002',8,upfr~'087-4'|upfr='060-001'|upfr='060-041'|upfr='060-010',7,upfr~'087-3'|upfr='060-029',6,upfr~'087-2'|upfr='060-050'|upfr='060-006',5,upfr~'087-7'|upfr='060-036'|upfr='060-048'|upfr='060-056',4,upfr~'087-5'|upfr='060-027',3,upfr~'087-8'|upfr='060-032',2,upfr='087-001'|upfr='060-045',1)).pfr^group{group :as ' %D0%93%D0%A3',(sum(pfr.summary)) :as '%D0%9E%D0%B1%D1%89%D0%B5%D0%B5%20%D0%BA%D0%BE%D0%BB-%D0%B2%D0%BE',(sum(pfr.pr_plus)) :as '%D0%98%D0%B7%20%D0%BD%D0%B8%D1%85%20%D1%81%20%D0%BF%D1%80%2B',(sum(pfr.pr_minus)) :as '%D0%98%D0%B7%20%D0%BD%D0%B8%D1%85%20%D1%81%20%D0%BF%D1%80-',(sum(pfr.summary)-(sum(pfr.pr_plus)+(sum(pfr.pr_minus)))) :as '%D0%91%D0%B5%D0%B7%20%D0%BF%D1%80%D0%BE%D1%82%D0%BE%D0%BA%D0%BE%D0%BB%D0%BE%D0%B2',(sum(pfr.pr_plus)+(sum(pfr.pr_minus)))/(sum(pfr.summary)/100) :round 2 :as '%25 %D0%9E%D0%B1%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D0%B8'}.limit(10)">
-            </table>
+        <div id="footer">
+            <p>
+                <a href="mailto:uaa@skbkontur.ru">uaa@skbkontur.ru</a>
+                | Copyright © 2012 spko
+            </p>
         </div>
-
-            <br>
-
-        <div>
-            <p class="first">Сводная информация по регионам</p>
-            <table id="regionpf"
-                       data-htsql="/define(pfr.group := if(upfr~'087-',77,upfr~'060-',50,upfr~'043-',33)).pfr^group{group :as '%D0%A0%D0%B5%D0%B3%D0%B8%D0%BE%D0%BD',(sum(pfr.summary)) :as '%D0%9E%D0%B1%D1%89%D0%B5%D0%B5%20%D0%BA%D0%BE%D0%BB-%D0%B2%D0%BE',(sum(pfr.pr_plus)) :as '%D0%98%D0%B7%20%D0%BD%D0%B8%D1%85%20%D1%81%20%D0%BF%D1%80%2B',(sum(pfr.pr_minus)) :as '%D0%98%D0%B7%20%D0%BD%D0%B8%D1%85%20%D1%81%20%D0%BF%D1%80-',(sum(pfr.summary)-((sum(pfr.pr_plus)+(sum(pfr.pr_minus))))) :as '%D0%91%D0%B5%D0%B7%20%D0%BF%D1%80%D0%BE%D1%82%D0%BE%D0%BA%D0%BE%D0%BB%D0%BE%D0%B2',(sum(pfr.pr_plus)+(sum(pfr.pr_minus)))/(sum(pfr.summary)/100) :round 2 :as '%25 %D0%9E%D0%B1%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D0%B8'}.limit(10)">
-            </table>
-        </div>
-
-        </div>
-    </div>
-</div>
-
-<div id="footer">
-    <p><a href="mailto:uaa@skbkontur.ru">uaa@skbkontur.ru</a> | Copyright © 2012 spko</p>
-</div>
 </body>
-</html>
+    </html>
